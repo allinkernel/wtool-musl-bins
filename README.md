@@ -194,6 +194,7 @@ tools/musl-bins/            ← 本仓库（GitHub: allinkernel/wtool-musl-bins�
 > | `ast-grep` | ast-grep/ast-grep | 只有 `app-x86_64-unknown-linux-gnu.zip`；下下来实跑 `ldd` → 依赖 `libgcc_s` / `libm` / `libc`，**动态链接**，不是静态 |
 > | `jless` | PaulJuliusMartinez/jless | 只有 `-x86_64-unknown-linux-gnu.zip`；实跑 `ldd` → `libxcb` / `libgcc_s` / `libc`，**动态链接** |
 > | `jc` | kellyjonbrazil/jc | 有 `jc-1.26.0-linux-x86_64.tar.gz`（27 MB），但那是 **PyInstaller 打的包**：`file` 明说 `dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2`、实跑 `ldd` → `libdl` / `libm` / `libpthread` / `libutil` / `libc` → **不是静态，不收**（D32）。它是纯 python 的工具（要装用 `pipx`），不属于这个仓的形态 |
+> | `gron` | tomnomnom/gron | 有 `gron-linux-amd64-0.7.1.tgz`（4 MB，**看起来**是 Go 静态），但下下来实跑：`file` = `dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2`、`ldd` → `libpthread` / `libc` → **不是静态，不收**（上游那份是 **CGO 打开**编的）。⭐ 这条正好说明"资产名里有 amd64 就当静态收"是错的 —— 判据只能是 `ldd` |
 > | `bandwhich` | imsnif/bandwhich | `v0.23.1` 有 `-x86_64-unknown-linux-musl.tar.gz`（**静态，验过**），但它要 **root / `cap_net_raw,cap_net_admin`** 才抓得到包 —— 用户 2026-10-13 明确"要特殊权限的跳过"。要收就是个 `docs/tools.tsv` 加一行的事（`trippy` 是先例：收了 + readme 里写清 `setcap`） |
 > | `lazydocker` | jesseduffield/lazydocker | `v0.25.2` 的 `lazydocker_0.25.2_Linux_x86_64.tar.gz`（Go 静态）本身合格，但它是**连 docker daemon 的 TUI**：目标机上没有/没权限连 socket 时它一行都显示不出来 → **跳过**（用户 2026-10-13 同意"依赖 docker/k8s 在跑的跳过"） |
 > | `k9s` | derailed/k9s | 同上（要一个能连的 k8s 集群），而且 `k9s_Linux_amd64.tar.gz` 是 **41 MB** → 跳过 |

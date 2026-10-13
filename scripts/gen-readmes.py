@@ -143,6 +143,16 @@ EXTRA = {
            "不是 source 的时候现算的。另：`terminal/fzf`（老项目）**还在提供 `fzf` 命令**，"
            "把 `fzf` 迁到本目录是一次性切换时的事（D34）。",
     # ---- 第 ⑦.3 块：B 档纯二进制（不需要 hook）----
+    "lf": "B 档。tag 是 **`r42`** 这种形式（不是 `v` 开头）—— `<muslbin tag=>` 照抄即可。"
+          "`--version` **只打 `r42`**（不带命令名）。lf 的配置/预览脚本要用户自己写"
+          "（`~/.config/lf/lfrc`），wtool 不碰。",
+    "hexyl": "B 档。归档里 `LICENSE-APACHE` 与 `LICENSE-MIT` **都在**（双许可，"
+             "所以这一格写 `MIT OR Apache-2.0`，跟 `bat` 一样；`gh api …/license` 只挑了一个报）。",
+    "micro": "B 档。⚠️ 上游同时发 **`micro-2.0.15-linux64.tar.gz`（动态）** 与 "
+             "**`micro-2.0.15-linux64-static.tar.gz`（静态）** —— 取的是**后者**"
+             "（`file` = statically linked / `ldd` = not a dynamic executable）；"
+             "拿错了那份就依赖宿主 glibc，`--version` 还照样打得出来，极难发现。"
+             "`micro --version` 打的是 `Version: 2.0.15`。",
     "watchexec": "B 档。⚠️ 上游**只发 `.tar.xz`**（同 tag 下还有 `.deb` / `.rpm`，**不取**）——"
                  "它是**引擎补 `.tar.xz` 的另一个理由**（见 `bootstrap` 的 `53bf46b`）。"
                  "归档里还有 `logo.svg` / `LICENSE` / 手册 / `completions/`，"

@@ -35,7 +35,7 @@ tools/musl-bins/            ← 本仓库（GitHub: allinkernel/wtool-musl-bins�
 │   ├── gen-readmes.py      ←   同上 → 生成每个工具的 readme.md + 本文件里那张工具总表
 │   ├── env-skeleton.txt    ←   env.{zsh,bash} 的模板（两份逐字等价靠它保证）
 │   └── versions.tsv        ←   实测的 `<命令> --version` 第一行（人读的佐证）
-├── bat/                    ← 一个工具 = 一个 wtool 项目（第 ⑦.3 块之后 45 个）
+├── bat/                    ← 一个工具 = 一个 wtool 项目（第 ⑦.3 块之后 42 个：29 + 5 hook + 8 B 档）
 │   ├── wtool.xml           ←   kind="muslbin" + <muslbin …> + <export_bin …>（hook 类还有 <generate>）
 │   ├── readme.md           ←   这个二进制从哪来（项目 / release 页 / tag / 资产 / sha256 / license）
 │   ├── env.zsh / env.bash  ←   两份逐字等价；本项目不往 PATH 里塞东西

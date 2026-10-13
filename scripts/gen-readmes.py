@@ -142,6 +142,11 @@ EXTRA = {
            "生成物**进账本**、`wtool uninstall` 删掉 —— 所以补全是「装的时候」才有的，"
            "不是 source 的时候现算的。另：`terminal/fzf`（老项目）**还在提供 `fzf` 命令**，"
            "把 `fzf` 迁到本目录是一次性切换时的事（D34）。",
+    "navi": "归档里那个成员叫 **`./navi`**（`member` 就写 `./navi` —— 引擎两边都会归一："
+            "去 `./` 前缀）。`<generate>` 跑 `navi widget <shell>`：它注册 "
+            "`_navi_widget` 并把 **Ctrl-G** 绑上去（在 zsh 的 `bindkey` / bash 的 "
+            "`bind -x` 里）。作弊条本身要用户自己攒（`navi repo add` / `~/.local/share/navi`），"
+            "wtool 不替他拉任何仓库。",
     "starship": "⚠️ **它会改提示符**：`<generate>` 跑的 `starship init <shell>` 会把 "
                 "`PROMPT` / `PS1` 接管（这就是它的用途）。装它的机器上提示符**一定**变样，"
                 "不想要就别装 —— 别的 muslbin 都不会动 shell 的显示。"

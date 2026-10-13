@@ -172,6 +172,7 @@ tools/musl-bins/            ← 本仓库（GitHub: allinkernel/wtool-musl-bins�
 | `direnv` | `direnv` | [direnv/direnv](https://github.com/direnv/direnv/releases/tag/v2.38.2) | `v2.38.2` | `direnv.linux-amd64` | tar 无（裸二进制，Go 静态） |
 | `atuin` | `atuin` | [atuinsh/atuin](https://github.com/atuinsh/atuin/releases/tag/v18.23.0) | `v18.23.0` | `atuin-x86_64-unknown-linux-musl.tar.gz` | tar.gz (musl，静态) |
 | `starship` | `starship` | [starship/starship](https://github.com/starship/starship/releases/tag/v1.26.0) | `v1.26.0` | `starship-x86_64-unknown-linux-musl.tar.gz` | tar.gz (musl，静态) |
+| `navi` | `navi` | [denisidoro/navi](https://github.com/denisidoro/navi/releases/tag/v2.24.0) | `v2.24.0` | `navi-v2.24.0-x86_64-unknown-linux-musl.tar.gz` | tar.gz (musl，静态) |
 <!-- END TOOLS-TABLE -->
 
 

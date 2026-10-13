@@ -26,7 +26,10 @@
 
   <!-- 补全 / 按键绑定脚本由**本项目自己的 env.{zsh,bash}** 去 source（D33）：
        生成物落在 __output/ 下（D41），不进 git、卸载时删掉。
-       ⚠️ 执行逻辑在第 ⑦.2 块接线，在那之前这两条**只解析、不校验、不执行**。 -->
+       cmd 在**安装时**跑，cwd = 项目根，PATH 前面是 $WTOOL_HOME/usr/bin
+       （所以跑的就是刚链上的那一份二进制）。
+       失败 / 产物是空的 → install 当场非 0（不会留半个生成物）。
+       ⚠️ XML 注释里不能出现两个连续的减号，所以这里不写命令原文。 -->
   <generate dest="__output/fzf.zsh"  cmd="fzf --zsh"/>
   <generate dest="__output/fzf.bash" cmd="fzf --bash"/>
 

@@ -35,3 +35,5 @@ zellij	zellij 0.45.1
 lazygit	lazygit 0.66.1
 dive	dive 0.13.1
 fzf	0.74.5 (c0a193e0)
+zoxide	zoxide 0.10.0
+direnv	2.38.2

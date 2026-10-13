@@ -136,13 +136,23 @@ EXTRA = {
                "（`target/x86_64-unknown-linux-musl/release/fclones`），"
                "所以 `member` 要把前缀写全 —— 声明式解包会剥掉 `member` 里最后一个 `/` "
                "之前的部分，落到 `dest` 的因此是裸的那个文件名。",
-    "fzf": "这个目录是本仓库里唯一带 `<generate>` 的（fzf 的补全 / 按键绑定脚本，D33）："
+    "fzf": "这个目录带两条 `<generate>`（fzf 的补全 / 按键绑定脚本，D33）："
            "`fzf --zsh` / `fzf --bash` 在 **`wtool install` 的时候**生成到 `__output/` 下，"
-           "再由本项目自己的 `env.{zsh,bash}` 去 source。"
-           "**执行逻辑在第 ⑦.2 块接线** —— 在那之前这两条只被解析、不执行"
-           "（引擎的 `<generate>` 目前是「解析 + 校验」），所以现在装完只有 `fzf` 命令本身，"
-           "**没有补全**。另：`terminal/fzf`（老项目）**还在提供 `fzf` 命令**，"
-           "把 `fzf` 迁到本目录是一次性切换时的事（D34），不属于第 ⑦.1 块。",
+           "再由本项目自己的 `env.{zsh,bash}` 去 source（各 source 自己那一份）。"
+           "生成物**进账本**、`wtool uninstall` 删掉 —— 所以补全是「装的时候」才有的，"
+           "不是 source 的时候现算的。另：`terminal/fzf`（老项目）**还在提供 `fzf` 命令**，"
+           "把 `fzf` 迁到本目录是一次性切换时的事（D34）。",
+    # ---- 第 ⑦.3 块：hook 类（<generate> 出各自的 shell 集成）----
+    "zoxide": "归档里**也有** `completions/zoxide.{bash,fish,nu,ps1,ts,elv}` 和 man 页，"
+              "但本项目**不用它们** —— shell 集成是 `<generate>` 在**安装时**跑 "
+              "`zoxide init <shell>` 现生成的（D33）：补全、`z` / `zi` 别名、`chpwd` "
+              "钩子（`__zoxide_hook`）都在那份产物里。装完 `z` / `zi` 就可用，"
+              "但 `zoxide` 得先在数据库里攒过目录（`zoxide add`）才有东西可跳。",
+    "direnv": "上游发的是**裸文件**（`direnv.linux-amd64`，没有归档）→ `member` 留空，"
+              "解出来直接落 `usr/bin/direnv`。它的 `--version` 只打版本号（`2.38.2`），"
+              "不带命令名。`<generate>` 跑 `direnv hook <shell>`：注册的是 "
+              "`_direnv_hook`，真正干活要用户在项目目录里放 `.envrc` 并 `direnv allow`"
+              "（那是**用户自己**的事，wtool 不替他写）。",
 }
 
 

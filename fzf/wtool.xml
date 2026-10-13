@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  fzf —— 上游 release 的 x86_64 静态二进制（② 类 `kind="muslbin"`，ADR-0045 §1.4）。
+
+  来源：junegunn/fzf   tag v0.74.5   license MIT
+  当前版本、release 页、资产名与 sha256 见同目录的 readme.md（**先读它再升级**）。
+
+  三件事别改坏：
+    · `<muslbin>` 是**下载声明**（`download-release` 读它，并按 sha256 校验）。
+      `tag` 必须钉死；`url` 必须指到**那个 tag** 的资产（不许用 latest）。
+      `member` = 归档里要取的那个成员，`dest` = 解到 `__output/` 下的哪个相对路径。
+    · `<export_bin src="__output/usr/bin/fzf">` 的 src **必须在 __output/ 下**（D40）——
+      它是"下载解出来的产物"，不是源码。落点由标签决定：$WTOOL_HOME/usr/bin/fzf。
+    · **本文件不写 PATH**：$WTOOL_HOME/usr/bin 由引擎统一放最前（ADR-0045 §1.2）。
+
+  ⚠️ 另有两条 <generate>（fzf 的补全脚本，D33）—— 它是 ③ 类里
+     `fzf` 存在的理由，所以本轮就按设计写进来。-->
+<wtool schema="1" kind="muslbin" priority="60">
+
+  <zshrc  src="env.zsh"/>
+  <bashrc src="env.bash"/>
+
+  <muslbin url="https://github.com/junegunn/fzf/releases/download/v0.74.5/fzf-0.74.5-linux_amd64.tar.gz"
+           tag="v0.74.5" sha256="d47d7f882972c7d674dbbba998ffa4116e68379616ffac7695d0671e9a722c5f"
+           member="fzf" dest="usr/bin/fzf" arch="x86_64"/>
+
+  <!-- 补全 / 按键绑定脚本由**本项目自己的 env.{zsh,bash}** 去 source（D33）：
+       生成物落在 __output/ 下（D41），不进 git、卸载时删掉。
+       ⚠️ 执行逻辑在第 ⑦.2 块接线，在那之前这两条**只解析、不校验、不执行**。 -->
+  <generate dest="__output/fzf.zsh"  cmd="fzf --zsh"/>
+  <generate dest="__output/fzf.bash" cmd="fzf --bash"/>
+
+  <export_bin src="__output/usr/bin/fzf"/>
+</wtool>

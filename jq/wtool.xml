@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  jq —— 上游 release 的 x86_64 静态二进制（② 类 `kind="muslbin"`，ADR-0045 §1.4）。
+
+  来源：jqlang/jq   tag jq-1.8.2   license MIT
+  当前版本、release 页、资产名与 sha256 见同目录的 readme.md（**先读它再升级**）。
+
+  三件事别改坏：
+    · `<muslbin>` 是**下载声明**（`download-release` 读它，并按 sha256 校验）。
+      `tag` 必须钉死；`url` 必须指到**那个 tag** 的资产（不许用 latest）。
+      `member` = 归档里要取的那个成员，`dest` = 解到 `__output/` 下的哪个相对路径。
+    · `<export_bin src="__output/usr/bin/jq">` 的 src **必须在 __output/ 下**（D40）——
+      它是"下载解出来的产物"，不是源码。落点由标签决定：$WTOOL_HOME/usr/bin/jq。
+    · **本文件不写 PATH**：$WTOOL_HOME/usr/bin 由引擎统一放最前（ADR-0045 §1.2）。
+-->
+<wtool schema="1" kind="muslbin" priority="60">
+
+  <zshrc  src="env.zsh"/>
+  <bashrc src="env.bash"/>
+
+  <muslbin url="https://github.com/jqlang/jq/releases/download/jq-1.8.2/jq-linux-amd64"
+           tag="jq-1.8.2" sha256="b1c22172dd303f3be49e935aa56aa48a8b7a46e0bc838b4997d3bb451495870f"
+           dest="usr/bin/jq" arch="x86_64"/>
+
+  <export_bin src="__output/usr/bin/jq"/>
+</wtool>

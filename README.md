@@ -49,41 +49,63 @@ tools/musl-bins/            ← 本仓库（GitHub: allinkernel/wtool-musl-bins�
 
    ```sh
    gh api repos/<owner>/<repo>/releases --jq '.[0].tag_name, (.[0].assets[].name)'
+   # 想看全部版本：gh api repos/<owner>/<repo>/releases --paginate \
+   #   --jq '.[] | select(.prerelease==false) | .tag_name as $t | .assets[] | "\($t)\t\(.name)"'
    ```
 
-   要的是 `x86_64-unknown-linux-musl.tar.gz`（Rust）或 `…_linux_x86_64.tar.gz`
-   （Go，`CGO_ENABLED=0` 编出来是静态的）。**没有就跳过这个工具**，
-   别拿 `-gnu` 的顶上（它依赖宿主 glibc，就失去这个项目存在的意义了）。
+   要的是 `x86_64-unknown-linux-musl.tar.gz`（Rust）或 `…_linux_x86_64` / `…_linux_amd64`
+   （Go，`CGO_ENABLED=0` 编出来是静态）。**没有就跳过这个工具**，
+   别拿 `-gnu` / `-glibc` 的顶上（它依赖宿主 glibc，就失去这个项目存在的意义了）。
 
-2. **真下下来、真算 sha256**（**不许照抄记忆或别处的清单**）：
+2. **真下下来、真算 sha256、真判它是不是静态**（**不许照抄记忆或别处的清单**）：
 
    ```sh
+   id=$(gh api repos/<owner>/<repo>/releases/tags/<tag> \
+        --jq '.assets[] | select(.name=="<资产名>") | .id')
    curl -fsSL -H 'Accept: application/octet-stream' \
-     "https://api.github.com/repos/<owner>/<repo>/releases/assets/<asset-id>" -o /tmp/a.tar.gz
-   sha256sum /tmp/a.tar.gz
+     "https://api.github.com/repos/<owner>/<repo>/releases/assets/$id" -o /tmp/a
+   sha256sum /tmp/a && stat -c %s /tmp/a
+   tar tzf /tmp/a | head          # 或 unzip -l /tmp/a —— 看归档形状
+   # ↓ 解出那个二进制再判：`ldd` 认不出来 = 静态（**这才是判据**，不是资产名）
+   tar xzf /tmp/a -C /tmp <member> && file -b /tmp/<基名> && ldd /tmp/<基名>
    ```
 
-3. **看归档里面是什么形状**（决定 `<muslbin member= dest=>` 怎么写）：
+3. **看归档里那个二进制叫什么**（决定 `member` / `dest` 怎么写）：
+
+   - **裸二进制**（`jq-linux-amd64`、`yq_linux_amd64`、`shfmt_v3.14.1_linux_amd64`、
+     `b3sum_linux_x64_bin` 这种，上游发的就是那个文件）→ `member` **不写**，`dest="usr/bin/<命令名>"`
+   - **归档里那一个文件**（`eza` 的 `./eza`、`just` 的 `just`）→ `member="<归档内的路径>"`，
+     `dest="usr/bin/<命令名>"`
+   - **归档里多一层目录**（`bat`、`sd`、`dust`、`glow`、`fclones`…）→ `member` 写**全路径**
+     （`bat-v0.26.1-…/bat`、`target/x86_64-unknown-linux-musl/release/fclones`）——
+     声明式解包会**剥掉最后一个 `/` 之前的部分**，落到 `dest` 的就是那个文件名
+   - ⚠️ **命令名可能和目录名不一样**：`bottom`→`btm`、`difftastic`→`difft`、`trippy`→`trip`。
+     那种情况 `dest="usr/bin/btm"`，`<export_bin>` 跟着走（`name=` 可以省，因为
+     `dest` 的 basename 已经对了）
+
+4. **改表 + 生成**（**别手写这三份文件**，它们由表生成）：
 
    ```sh
-   tar tzf /tmp/a.tar.gz | head    # 或 unzip -l /tmp/a.zip
+   # ① docs/tools.tsv 加一行（或改一行）—— 这是唯一权威表
+   # ② 生成：
+   python3 scripts/gen-files.py   <工具>     # → <工具>/{wtool.xml,env.zsh,env.bash}
+   python3 scripts/gen-readmes.py <工具>     # → <工具>/readme.md
+   # ③ 把实测的 `<命令> --version` 第一行补进 scripts/versions.tsv，再重跑 ②
+   # ④ 查漂移（CI 式的自查）：
+   python3 scripts/gen-files.py --check && python3 scripts/gen-readmes.py --check
    ```
-
-   - 裸二进制（`bat` / `jq-linux-amd64` 这种，不是压缩包）→ `member` 不写、`dest="usr/bin/<工具>"`
-   - 归档里就是那个二进制 → `member="<归档内的名字>"`
-   - 归档里**多一层目录** → 用 `scripts/unpack.sh` 剥掉（见 `shellcheck/`、`procs/`、`yazi/`、`duf/`）
-
-4. **写目录**：`mkdir <工具>` → 抄一份 `wtool.xml` / `readme.md` / `env.{zsh,bash}` 改；
-   把 `docs/tools.tsv` 加一行（**表格是权威**，readme 是给人读的展开版）。
 
 5. **验一遍**（在**临时** `$WTOOL_HOME` 里，别碰真 `$HOME`）：
 
    ```sh
    export WTOOL_HOME=$(mktemp -d)/.wtool WTOOL_STATE=$(mktemp -d)
-   sh bootstrap/wtool.sh download-release tools/musl-bins/<工具>
-   sh bootstrap/wtool.sh unpack-release   tools/musl-bins/<工具>
-   sh bootstrap/wtool.sh install          tools/musl-bins/<工具>
-   "$WTOOL_HOME/usr/bin/<工具>" --version
+   # ⚠️ ⑦.1 时点上 `download-release` / `unpack-release` 对 ② 类还**没接线**
+   #    （<muslbin url=> 还没人读、extract-tree 只认 zip）——
+   #    先手工把二进制铺到 <工具>/__output/usr/bin/<命令名>，至少把 install 那一段验掉：
+   sh bootstrap/wtool.sh install tools/musl-bins/<工具>
+   readlink "$WTOOL_HOME/usr/bin/<命令名>"      # 应当是一条相对链
+   "$WTOOL_HOME/usr/bin/<命令名>" --version
+   sh bootstrap/wtool.sh uninstall tools/musl-bins/<工具>
    ```
 
 ## 每个工具的来源

@@ -199,7 +199,11 @@ def main():
             note_block=note_block, bump_warn=bump_warn)
         p = os.path.join(args.out, tool, "readme.md")
         if args.check:
-            old = open(p, encoding="utf-8").read() if os.path.isfile(p) else None
+            if os.path.isfile(p):
+                with open(p, encoding="utf-8") as fh:
+                    old = fh.read()
+            else:
+                old = None
             if old != text:
                 print("DRIFT %s" % p)
                 rc = 1

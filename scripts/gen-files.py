@@ -140,7 +140,11 @@ def main():
         for name, text in files.items():
             p = os.path.join(d, name)
             if args.check:
-                old = open(p, encoding="utf-8").read() if os.path.isfile(p) else None
+                if os.path.isfile(p):
+                    with open(p, encoding="utf-8") as fh:
+                        old = fh.read()
+                else:
+                    old = None
                 if old != text:
                     print("DRIFT %s" % p)
                     rc = 1

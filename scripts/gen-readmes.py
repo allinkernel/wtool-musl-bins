@@ -142,6 +142,11 @@ EXTRA = {
            "生成物**进账本**、`wtool uninstall` 删掉 —— 所以补全是「装的时候」才有的，"
            "不是 source 的时候现算的。另：`terminal/fzf`（老项目）**还在提供 `fzf` 命令**，"
            "把 `fzf` 迁到本目录是一次性切换时的事（D34）。",
+    "starship": "⚠️ **它会改提示符**：`<generate>` 跑的 `starship init <shell>` 会把 "
+                "`PROMPT` / `PS1` 接管（这就是它的用途）。装它的机器上提示符**一定**变样，"
+                "不想要就别装 —— 别的 muslbin 都不会动 shell 的显示。"
+                "它是本仓库唯一 **ISC** 许可的（其余都是 MIT / Apache-2.0 / BSD）。"
+                "配置在 `~/.config/starship.toml`（**用户自己**的，wtool 不写）。",
     "atuin": "归档里那个成员带一层目录前缀（`atuin-x86_64-unknown-linux-musl/atuin`）。"
              "⚠️ 解出来是 **41 MB**（压缩后 16.7 MB）—— 本仓库里最大的一个。"
              "`<generate>` 跑 `atuin init <shell>`。它的历史默认存在**本地 SQLite**"

@@ -24,7 +24,7 @@
 | license | **上游的：MIT** —— 本仓库只做声明，**不分发二进制** |
 | shell 集成（`<generate>`，D33） | `fzf --zsh` / `fzf --bash` —— **安装时**生成到 `__output/fzf.{zsh,bash}`，由本项目自己的 `env.{zsh,bash}` 去 source |
 
-> ⚠️ **注意**：这个目录是本仓库里唯一带 `<generate>` 的（fzf 的补全 / 按键绑定脚本，D33）：`fzf --zsh` / `fzf --bash` 在 **`wtool install` 的时候**生成到 `__output/` 下，再由本项目自己的 `env.{zsh,bash}` 去 source。**执行逻辑在第 ⑦.2 块接线** —— 在那之前这两条只被解析、不执行（引擎的 `<generate>` 目前是「解析 + 校验」），所以现在装完只有 `fzf` 命令本身，**没有补全**。另：`terminal/fzf`（老项目）**还在提供 `fzf` 命令**，把 `fzf` 迁到本目录是一次性切换时的事（D34），不属于第 ⑦.1 块。
+> ⚠️ **注意**：这个目录带两条 `<generate>`（fzf 的补全 / 按键绑定脚本，D33）：`fzf --zsh` / `fzf --bash` 在 **`wtool install` 的时候**生成到 `__output/` 下，再由本项目自己的 `env.{zsh,bash}` 去 source（各 source 自己那一份）。生成物**进账本**、`wtool uninstall` 删掉 —— 所以补全是「装的时候」才有的，不是 source 的时候现算的。另：`terminal/fzf`（老项目）**还在提供 `fzf` 命令**，把 `fzf` 迁到本目录是一次性切换时的事（D34）。
 
 ## 怎么装
 

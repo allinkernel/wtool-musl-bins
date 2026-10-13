@@ -176,6 +176,7 @@ tools/musl-bins/            ← 本仓库（GitHub: allinkernel/wtool-musl-bins�
 | `rclone` | `rclone` | [rclone/rclone](https://github.com/rclone/rclone/releases/tag/v1.75.2) | `v1.75.2` | `rclone-v1.75.2-linux-amd64.zip` | zip (Go，静态) |
 | `miller` | `mlr` | [johnkerl/miller](https://github.com/johnkerl/miller/releases/tag/v6.22.0) | `v6.22.0` | `miller-6.22.0-linux-amd64.tar.gz` | tar.gz (Go，静态) |
 | `csvlens` | `csvlens` | [YS-L/csvlens](https://github.com/YS-L/csvlens/releases/tag/v0.15.1) | `v0.15.1` | `csvlens-x86_64-unknown-linux-musl.tar.xz` | tar.xz (musl，静态) |
+| `watchexec` | `watchexec` | [watchexec/watchexec](https://github.com/watchexec/watchexec/releases/tag/v2.8.0) | `v2.8.0` | `watchexec-2.8.0-x86_64-unknown-linux-musl.tar.xz` | tar.xz (musl，静态) |
 <!-- END TOOLS-TABLE -->
 
 

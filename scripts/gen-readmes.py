@@ -143,6 +143,11 @@ EXTRA = {
            "不是 source 的时候现算的。另：`terminal/fzf`（老项目）**还在提供 `fzf` 命令**，"
            "把 `fzf` 迁到本目录是一次性切换时的事（D34）。",
     # ---- 第 ⑦.3 块：B 档纯二进制（不需要 hook）----
+    "watchexec": "B 档。⚠️ 上游**只发 `.tar.xz`**（同 tag 下还有 `.deb` / `.rpm`，**不取**）——"
+                 "它是**引擎补 `.tar.xz` 的另一个理由**（见 `bootstrap` 的 `53bf46b`）。"
+                 "归档里还有 `logo.svg` / `LICENSE` / 手册 / `completions/`，"
+                 "只有 `member` 那一个进 `__output/`。容器验收里专门有一条断言"
+                 "盯着「下下来的确实是 `.tar.xz` 而且解包成功」。",
     "csvlens": "B 档。⚠️ 上游**只发 `.tar.xz`**（这个 tag 下没有 `.tar.gz` / `.zip`）—— "
                "引擎在**第 ⑦.3 块**才认得这种格式（在那之前会报「只认 .zip/.tar/.tar.gz/.tgz」，"
                "见 `bootstrap` 的 `53bf46b`）。解压靠 python 的 `tarfile`（`r:*` 自动认 xz），"

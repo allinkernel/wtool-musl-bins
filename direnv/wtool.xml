@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  direnv —— 上游 release 的 x86_64 静态二进制（② 类 `kind="muslbin"`，ADR-0045 §1.4）。
+
+  来源：direnv/direnv   tag v2.38.2   license MIT
+  当前版本、release 页、资产名与 sha256 见同目录的 readme.md（**先读它再升级**）。
+
+  三件事别改坏：
+    · `<muslbin>` 是**下载声明**（`download-release` 读它，并按 sha256 校验）。
+      `tag` 必须钉死；`url` 必须指到**那个 tag** 的资产（不许用 latest）。
+      `member` = 归档里要取的那个成员，`dest` = 解到 `__output/` 下的哪个相对路径。
+    · `<export_bin src="__output/usr/bin/direnv">` 的 src **必须在 __output/ 下**（D40）——
+      它是"下载解出来的产物"，不是源码。落点由标签决定：$WTOOL_HOME/usr/bin/direnv。
+    · **本文件不写 PATH**：$WTOOL_HOME/usr/bin 由引擎统一放最前（ADR-0045 §1.2）。
+
+  ⚠️ 另有 2 条 <generate>（direnv 的 shell 集成，D33 / D41）：生成物落在
+     __output/ 下、**装的时候**才生成（进账本，卸载时删掉），
+     再由本项目自己的 env.{zsh,bash} 去 source。-->
+<wtool schema="1" kind="muslbin" priority="60">
+
+  <zshrc  src="env.zsh"/>
+  <bashrc src="env.bash"/>
+
+  <muslbin url="https://github.com/direnv/direnv/releases/download/v2.38.2/direnv.linux-amd64"
+           tag="v2.38.2" sha256="148820a187930d36ca6a204504e5cdb30d8396cd1a97e64c3b3f10d793c11247"
+           dest="usr/bin/direnv" arch="x86_64"/>
+
+  <!-- shell 集成由**本项目自己的 env.{zsh,bash}** 去 source（D33）：
+       生成物落在 __output/ 下（D41），不进 git、卸载时删掉。
+       cmd 在**安装时**跑，cwd = 项目根，PATH 前面是 $WTOOL_HOME/usr/bin
+       （所以跑的就是刚链上的那一份二进制）。
+       失败 / 产物是空的 → install 当场非 0（不会留半个生成物）。
+       ⚠️ XML 注释里不能出现两个连续的减号，所以这里不写命令原文。 -->
+  <generate dest="__output/direnv.zsh"  cmd="direnv hook zsh"/>
+  <generate dest="__output/direnv.bash" cmd="direnv hook bash"/>
+
+  <export_bin src="__output/usr/bin/direnv"/>
+</wtool>

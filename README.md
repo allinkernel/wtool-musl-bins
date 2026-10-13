@@ -154,6 +154,8 @@ tools/musl-bins/            ← 本仓库（GitHub: allinkernel/wtool-musl-bins�
 | `lazygit` | `lazygit` | [jesseduffield/lazygit](https://github.com/jesseduffield/lazygit/releases/tag/v0.66.1) | `v0.66.1` | `lazygit_0.66.1_linux_x86_64.tar.gz` | tar.gz (Go，静态) |
 | `dive` | `dive` | [wagoodman/dive](https://github.com/wagoodman/dive/releases/tag/v0.13.1) | `v0.13.1` | `dive_0.13.1_linux_amd64.tar.gz` | tar.gz (Go，静态) |
 | `fzf` | `fzf` | [junegunn/fzf](https://github.com/junegunn/fzf/releases/tag/v0.74.5) | `v0.74.5` | `fzf-0.74.5-linux_amd64.tar.gz` | tar.gz (Go，静态) |
+| `zoxide` | `zoxide` | [ajeetdsouza/zoxide](https://github.com/ajeetdsouza/zoxide/releases/tag/v0.10.0) | `v0.10.0` | `zoxide-0.10.0-x86_64-unknown-linux-musl.tar.gz` | tar.gz (musl，静态) |
+| `direnv` | `direnv` | [direnv/direnv](https://github.com/direnv/direnv/releases/tag/v2.38.2) | `v2.38.2` | `direnv.linux-amd64` | tar 无（裸二进制，Go 静态） |
 <!-- END TOOLS-TABLE -->
 
 

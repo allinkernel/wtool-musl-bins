@@ -3,7 +3,7 @@
   "project": "tools/musl-bins/dust",
   "offlineTag": "offline-2026-10-14",
   "artifacts": {
-    "release-offline.zip": [
+    "dust-release-offline.zip": [
       {
         "from": "wtool/**",
         "to": "."
@@ -21,5 +21,5 @@
   "volume_size": "",
   "declare": [],
   "targets": [],
-  "how": "# 断网机（没有 wtool，也不联网）：从离线 tag offline-2026-10-14 的发布页人工下载\nunzip release-offline.zip && cp -a wtool/. \"$WTOOL_HOME/wtool/\"\nwtool install tools/musl-bins/dust            # 东西都在包里，不联网"
+  "how": ""
 }

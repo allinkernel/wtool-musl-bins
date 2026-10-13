@@ -143,6 +143,9 @@ EXTRA = {
            "不是 source 的时候现算的。另：`terminal/fzf`（老项目）**还在提供 `fzf` 命令**，"
            "把 `fzf` 迁到本目录是一次性切换时的事（D34）。",
     # ---- 第 ⑦.3 块：B 档纯二进制（不需要 hook）----
+    "miller": "B 档。**命令叫 `mlr`**（不是 `miller`），所以 `dest` 是 `usr/bin/mlr`；"
+              "归档里还有 `LICENSE.txt` / `README.md`，只有 `mlr` 那一个进 `__output/`。"
+              "它是本仓库第二个 **BSD-2-Clause** 的项目（另一个是 `shfmt` 的 BSD-3）。",
     "rclone": "B 档。归档里还有 `README.html` / `README.txt` / `rclone.1` / `git-log.txt`，"
               "只有 `member` 那一个进 `__output/`。zip 解出来 **32 MB**（本仓库第二大，"
               "仅次于 atuin）。⚠️ 上游 asset 列表里还有 `.deb` / `.rpm` —— 那些**不要**"

@@ -174,6 +174,7 @@ tools/musl-bins/            ← 本仓库（GitHub: allinkernel/wtool-musl-bins�
 | `starship` | `starship` | [starship/starship](https://github.com/starship/starship/releases/tag/v1.26.0) | `v1.26.0` | `starship-x86_64-unknown-linux-musl.tar.gz` | tar.gz (musl，静态) |
 | `navi` | `navi` | [denisidoro/navi](https://github.com/denisidoro/navi/releases/tag/v2.24.0) | `v2.24.0` | `navi-v2.24.0-x86_64-unknown-linux-musl.tar.gz` | tar.gz (musl，静态) |
 | `rclone` | `rclone` | [rclone/rclone](https://github.com/rclone/rclone/releases/tag/v1.75.2) | `v1.75.2` | `rclone-v1.75.2-linux-amd64.zip` | zip (Go，静态) |
+| `miller` | `mlr` | [johnkerl/miller](https://github.com/johnkerl/miller/releases/tag/v6.22.0) | `v6.22.0` | `miller-6.22.0-linux-amd64.tar.gz` | tar.gz (Go，静态) |
 <!-- END TOOLS-TABLE -->
 
 

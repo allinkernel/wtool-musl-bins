@@ -91,29 +91,43 @@ tools/musl-bins/            ← 本仓库（GitHub: allinkernel/wtool-musl-bins�
      那种情况 `dest="usr/bin/btm"`，`<export_bin>` 跟着走（`name=` 可以省，因为
      `dest` 的 basename 已经对了）
 
-4. **改表 + 生成**（**别手写这三份文件**，它们由表生成）：
+4. **改表 + 生成**（**别手写 `<工具>/` 下的文件**，它们由表生成）：
 
    ```sh
    # ① docs/tools.tsv 加一行（或改一行）—— 这是唯一权威表
+   #    带 shell 集成的工具（zoxide 这种）把命令写进最后一列 `generate`：
+   #        zsh:zoxide init zsh;bash:zoxide init bash
+   #    → gen-files.py 会连 <generate> 和 env 里的 source 块一起生成
    # ② 生成：
    python3 scripts/gen-files.py   <工具>     # → <工具>/{wtool.xml,env.zsh,env.bash}
    python3 scripts/gen-readmes.py <工具>     # → <工具>/readme.md
    # ③ 把实测的 `<命令> --version` 第一行补进 scripts/versions.tsv，再重跑 ②
-   # ④ 查漂移（CI 式的自查）：
-   python3 scripts/gen-files.py --check && python3 scripts/gen-readmes.py --check
+   #    工具总表也一起刷新（README.md 里两个标记之间的那段）：
+   python3 scripts/gen-readmes.py --table    # 打到 stdout，贴回 README.md
+   # ④ 查漂移（CI 式的自查，三处都要 0 DRIFT）：
+   python3 scripts/gen-files.py --check && python3 scripts/gen-readmes.py --check \
+     && python3 scripts/gen-readmes.py --table --check
    ```
 
 5. **验一遍**（在**临时** `$WTOOL_HOME` 里，别碰真 `$HOME`）：
 
    ```sh
    export WTOOL_HOME=$(mktemp -d)/.wtool WTOOL_STATE=$(mktemp -d)
-   # ⚠️ ⑦.1 时点上 `download-release` / `unpack-release` 对 ② 类还**没接线**
-   #    （<muslbin url=> 还没人读、extract-tree 只认 zip）——
-   #    先手工把二进制铺到 <工具>/__output/usr/bin/<命令名>，至少把 install 那一段验掉：
-   sh bootstrap/wtool.sh install tools/musl-bins/<工具>
+   sh bootstrap/wtool.sh download-release tools/musl-bins/<工具>   # 按 <muslbin url=> 下 + sha256
+   sh bootstrap/wtool.sh unpack-release   tools/musl-bins/<工具>   # 按 member=/dest= 解
+   sh bootstrap/wtool.sh install          tools/musl-bins/<工具>
    readlink "$WTOOL_HOME/usr/bin/<命令名>"      # 应当是一条相对链
    "$WTOOL_HOME/usr/bin/<命令名>" --version
    sh bootstrap/wtool.sh uninstall tools/musl-bins/<工具>
+   ```
+
+   ⚠️ **hook 类**（`generate` 列非空）还要验 shell 集成：装完在
+   **交互式** shell 里 source 一下项目的 `env.<shell>`，看函数有没有注册 ——
+
+   ```sh
+   env -i HOME=$HOME PATH=$PATH WTOOL_HOME=$WTOOL_HOME zsh -f -i -c \
+     '. $WTOOL_HOME/wtool/tools/musl-bins/zoxide/env.zsh; typeset -f __zoxide_z'
+   # 非交互（zsh -c 不带 -i）里一个定义都不会有 —— 那不是坏了
    ```
 
 ## 每个工具的来源

@@ -142,6 +142,11 @@ EXTRA = {
            "生成物**进账本**、`wtool uninstall` 删掉 —— 所以补全是「装的时候」才有的，"
            "不是 source 的时候现算的。另：`terminal/fzf`（老项目）**还在提供 `fzf` 命令**，"
            "把 `fzf` 迁到本目录是一次性切换时的事（D34）。",
+    "atuin": "归档里那个成员带一层目录前缀（`atuin-x86_64-unknown-linux-musl/atuin`）。"
+             "⚠️ 解出来是 **41 MB**（压缩后 16.7 MB）—— 本仓库里最大的一个。"
+             "`<generate>` 跑 `atuin init <shell>`。它的历史默认存在**本地 SQLite**"
+             "（`~/.local/share/atuin`），要用同步得自己 `atuin register` / `atuin login`"
+             "（那是**用户自己**的事，wtool 不碰）。",
     # ---- 第 ⑦.3 块：hook 类（<generate> 出各自的 shell 集成）----
     "zoxide": "归档里**也有** `completions/zoxide.{bash,fish,nu,ps1,ts,elv}` 和 man 页，"
               "但本项目**不用它们** —— shell 集成是 `<generate>` 在**安装时**跑 "

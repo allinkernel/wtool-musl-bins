@@ -8,8 +8,11 @@
 只有工具名不同，而"两份逐字等价"是硬要求。手写 = 60 份可以互相漂移的副本。
 所以：**模板在本脚本 + `scripts/env-skeleton.txt`（一处），数据在 `docs/tools.tsv`（一处）**。
 
-⚠️ `readme.md` **不由它生成** —— 那份是给人读的（来源、release 页、完整 URL、升级步骤），
-   每个工具的内容不一样，手写；本脚本只保证 `wtool.xml` 和 `env.*` 不漂移。
+带 shell 集成的工具（`fzf` / `zoxide` / `direnv` / `atuin` / `starship` / `navi` 这种）
+也走这里：表里的 `generate` 列 → `<generate>` 声明 + `env.*` 末尾那段 source 块。
+（第 ⑦.2 块 fzf 那两份 env 是手写的，于是和本脚本漂移了 —— 第 ⑦.3 块收回脚本生成。）
+
+⚠️ `readme.md` 由 `scripts/gen-readmes.py` 生成（不是本脚本，也不是手写 30 份）。
 
 ⚠️ 本脚本**不参与安装**：它只是仓库维护工具。装的时候引擎不需要它。
 """
@@ -18,7 +21,58 @@ import os
 import sys
 
 COLS = ("tool", "repo", "tag", "asset", "sha256", "bytes", "member", "dest",
-        "archive", "license", "note")
+        "archive", "license", "note", "generate")
+
+# `<generate>`（ADR-0045 D33 / D41）：**安装时**跑的命令，输出落 `__output/`，
+# 由本项目自己的 `env.<shell>` 去 source。表里的 `generate` 列就是它：
+#
+#     zsh:zoxide init zsh;bash:zoxide init bash
+#
+# —— `<shell>:<命令>` 若干条，`;` 隔开；空白 = 这个工具不需要 shell 集成。
+# 加一条 `zsh:`/`bash:` 就自动多一条 `<generate>` + env 里的 source 块，
+# 手不用碰任何 `<工具>/` 下的文件（它们是生成物）。
+GENERATE_SHELLS = ("zsh", "bash")
+# 生成物一律叫 `<工具>.<shell>`；env 里那个中转变量叫 `WTOOL_<工具大写>_RC`
+# （工具名里的 `-` 换成 `_`，否则不是合法的 shell 变量名）。
+HOOK_BLOCK = """
+# ---------------------------------------------------------------------------
+# shell 集成：**安装时生成**，这里只负责 source（D33 / D41）
+#
+# 生成物落在 __output/ 下（不是源码树）：它是**安装期产物**，不进 git。
+# 生成它的命令写在 wtool.xml 里：
+#     <generate dest="__output/{tool}.{shell}" cmd="{cmd}"/>
+# `wtool install` 时跑（产物进账本）、`wtool uninstall` 时删。
+#
+# ‼️ 生成物读不到就**说一句再跳过**，绝不静默：静默的症状是"{tool} 装好了，
+#    但 shell 集成没生效"，而这里一声不吭 —— 和本文件顶部那段是同一个理由
+#    （半装状态最难查）。真装过的话它一定在。
+# ---------------------------------------------------------------------------
+# 单独 source（不经 wtool 块）时的兜底：L1 路径就是项目在 $WTOOL_HOME 里的稳定地址
+[ -n "${{WTOOL_PROJECT_DIR:-}}" ] || WTOOL_PROJECT_DIR="$WTOOL_HOME/wtool/tools/musl-bins/{tool}"
+WTOOL_{upper}_RC="$WTOOL_PROJECT_DIR/__output/{tool}.{shell}"
+if [ -r "$WTOOL_{upper}_RC" ]; then
+    source "$WTOOL_{upper}_RC"
+else
+    echo "wtool: {tool} 的 shell 集成还没生成：$WTOOL_{upper}_RC" >&2
+    echo "       它是 wtool install 时按 wtool.xml 的 <generate> 生成的；" >&2
+    echo "       跑一次 wtool install tools/musl-bins/{tool} 就有了（不用重下二进制）。" >&2
+fi
+unset WTOOL_{upper}_RC
+"""
+GENERATE_LINE = '  <generate dest="__output/{tool}.{shell}"{pad} cmd="{cmd}"/>\n'
+# 这段注释跟着 `<generate>` 那几行走（说清"什么时候跑、在什么环境里跑、失败了会怎样"）。
+GENERATE_BLOCK = """
+  <!-- shell 集成由**本项目自己的 env.{zsh,bash}** 去 source（D33）：
+       生成物落在 __output/ 下（D41），不进 git、卸载时删掉。
+       cmd 在**安装时**跑，cwd = 项目根，PATH 前面是 $WTOOL_HOME/usr/bin
+       （所以跑的就是刚链上的那一份二进制）。
+       失败 / 产物是空的 → install 当场非 0（不会留半个生成物）。
+       ⚠️ XML 注释里不能出现两个连续的减号，所以这里不写命令原文。 -->
+"""
+GENERATE_COMMENT = """
+  ⚠️ 另有 {n} 条 <generate>（{tool} 的 shell 集成，D33 / D41）：生成物落在
+     __output/ 下、**装的时候**才生成（进账本，卸载时删掉），
+     再由本项目自己的 env.{{zsh,bash}} 去 source。"""
 
 WTOOL_XML = """<?xml version="1.0" encoding="UTF-8"?>
 <!--
@@ -48,13 +102,47 @@ WTOOL_XML = """<?xml version="1.0" encoding="UTF-8"?>
 </wtool>
 """
 
-GENERATE_FZF = """
-  <!-- 补全 / 按键绑定脚本由**本项目自己的 env.{zsh,bash}** 去 source（D33）：
-       生成物落在 __output/ 下（D41），不进 git、卸载时删掉。
-       ⚠️ 执行逻辑在第 ⑦.2 块接线，在那之前这两条**只解析、不校验、不执行**。 -->
-  <generate dest="__output/fzf.zsh"  cmd="fzf --zsh"/>
-  <generate dest="__output/fzf.bash" cmd="fzf --bash"/>
-"""
+def parse_generate(spec):
+    """表里的 `generate` 列 → `[(shell, cmd), …]`（顺序 = 列里的顺序）。
+
+    格式：`<shell>:<命令>`，多条用 `;` 隔开。写错了**这里就报错**，
+    而不是生成一份坏清单（坏清单要跑到安装时才炸）。
+    """
+    out = []
+    for item in (spec or "").split(";"):
+        item = item.strip()
+        if not item:
+            continue
+        shell, sep, cmd = item.partition(":")
+        shell, cmd = shell.strip(), cmd.strip()
+        if not sep or shell not in GENERATE_SHELLS or not cmd:
+            raise ValueError("generate 列写得不对：%r\n"
+                             "  期望 `<shell>:<命令>`（shell ∈ %s），多条用 `;` 隔开"
+                             % (item, " / ".join(GENERATE_SHELLS)))
+        out.append((shell, cmd))
+    dup = [s for s in GENERATE_SHELLS if [x[0] for x in out].count(s) > 1]
+    if dup:
+        raise ValueError("generate 列里同一个 shell 出现了两次：%s" % " ".join(dup))
+    return out
+
+
+def render_generate(tool, spec):
+    """→ (`<generate>` 那几行（含注释）, {shell: env 文件末尾那段 source 块})。
+
+    ⚠️ source 块要**按 shell 分开**：`env.zsh` 只 source `<工具>.zsh`、
+    `env.bash` 只 source `<工具>.bash`。两边都塞 = bash 的初始化脚本被 zsh
+    执行一遍（反过来也一样），那是错的行为，不是"更兼容"。
+    """
+    gens = parse_generate(spec)
+    if not gens:
+        return "", {}
+    pad = max(len(s) for s, _c in gens)
+    lines = [GENERATE_LINE.format(tool=tool, shell=s, cmd=c, pad=" " * (pad - len(s)))
+             for s, c in gens]
+    hooks = {s: HOOK_BLOCK.format(tool=tool, shell=s, cmd=c,
+                                  upper=tool.upper().replace("-", "_"))
+             for s, c in gens}
+    return GENERATE_BLOCK + "".join(lines), hooks
 
 
 def read_catalog(path):
@@ -81,11 +169,11 @@ def xml_escape(s):
 def render_xml(row):
     tool = row["tool"]
     member_attr = ('member="%s" ' % xml_escape(row["member"])) if row["member"] else ""
-    generate = generate_comment = ""
-    if tool == "fzf":
-        generate = GENERATE_FZF
-        generate_comment = ("\n  ⚠️ 另有两条 <generate>（fzf 的补全脚本，D33）—— 它是 ③ 类里\n"
-                            "     `fzf` 存在的理由，所以本轮就按设计写进来。")
+    generate, _hook = render_generate(tool, row["generate"])
+    generate_comment = ""
+    if generate:
+        generate_comment = GENERATE_COMMENT.format(
+            tool=tool, n=len(parse_generate(row["generate"])))
     return WTOOL_XML.format(
         tool=tool, repo=row["repo"], tag=row["tag"],
         license=row["license"] or "见上游仓库",
@@ -95,12 +183,13 @@ def render_xml(row):
         generate=generate, generate_comment=generate_comment)
 
 
-def render_env(tool, shell, other, rcfile):
+def render_env(tool, shell, other, rcfile, hook_block):
     skeleton = os.path.join(os.path.dirname(os.path.abspath(__file__)), "env-skeleton.txt")
     with open(skeleton, encoding="utf-8") as fh:
         text = fh.read()
     return (text.replace("<TOOL>", tool).replace("<SHELL>", shell)
-                .replace("<OTHER>", other).replace("<RCFILE>", rcfile))
+                .replace("<OTHER>", other).replace("<RCFILE>", rcfile)
+                .replace("<HOOK_BLOCK>", hook_block))
 
 
 def main():
@@ -132,10 +221,13 @@ def main():
             continue
         d = os.path.join(args.out, row["tool"])
         os.makedirs(d, exist_ok=True)
+        _gen, hooks = render_generate(row["tool"], row["generate"])
         files = {
             "wtool.xml": render_xml(row),
-            "env.zsh": render_env(row["tool"], "zsh", "bash", "zshrc"),
-            "env.bash": render_env(row["tool"], "bash", "zsh", "bashrc"),
+            "env.zsh": render_env(row["tool"], "zsh", "bash", "zshrc",
+                                  hooks.get("zsh", "")),
+            "env.bash": render_env(row["tool"], "bash", "zsh", "bashrc",
+                                   hooks.get("bash", "")),
         }
         for name, text in files.items():
             p = os.path.join(d, name)

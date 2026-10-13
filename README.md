@@ -9,6 +9,14 @@
 `env.zsh` / `env.bash`。**二进制不进 git** —— 它们由 `wtool download-release`
 从上游 release 页下下来，解到子目录的 `__output/usr/bin/` 下。
 
+三类工具都在这里（第 ⑦.1 / ⑦.3 块）：
+
+| 类 | 是什么 | 例子 |
+|---|---|---|
+| **A 档** | 纯二进制，装完就能敲 | `bat` / `jq` / `eza` … |
+| **hook 类** | 除了二进制，还要往 shell 里注册函数/别名 → 用 `<generate>`（**安装时**生成 shell 集成，`env.{zsh,bash}` 去 source） | `fzf` / `zoxide` / `direnv` / `atuin` / `starship` / `navi` |
+| **B 档** | 纯二进制，但要跑起来才知道有没有用（联网 / 看文件 / 大） | `rclone` / `miller` / `lf` / `micro` / `qsv` … |
+
 ## 为什么要有这个项目
 
 `x86_64-musl` 的静态二进制**不依赖 glibc**，所以同一份文件在
@@ -24,11 +32,11 @@ tools/musl-bins/            ← 本仓库（GitHub: allinkernel/wtool-musl-bins�
 ├── docs/tools.tsv          ← **唯一权威的工具表**（谁、哪个 tag、哪个资产、sha256、member、dest）
 ├── scripts/                ← 维护脚本（**不参与安装**）
 │   ├── gen-files.py        ←   读 docs/tools.tsv → 生成每个工具的 wtool.xml + env.{zsh,bash}
-│   ├── gen-readmes.py      ←   同上 → 生成每个工具的 readme.md
+│   ├── gen-readmes.py      ←   同上 → 生成每个工具的 readme.md + 本文件里那张工具总表
 │   ├── env-skeleton.txt    ←   env.{zsh,bash} 的模板（两份逐字等价靠它保证）
 │   └── versions.tsv        ←   实测的 `<命令> --version` 第一行（人读的佐证）
-├── bat/                    ← 一个工具 = 一个 wtool 项目（28 个）
-│   ├── wtool.xml           ←   kind="muslbin" + <muslbin …> + <export_bin …>
+├── bat/                    ← 一个工具 = 一个 wtool 项目（第 ⑦.3 块之后 45 个）
+│   ├── wtool.xml           ←   kind="muslbin" + <muslbin …> + <export_bin …>（hook 类还有 <generate>）
 │   ├── readme.md           ←   这个二进制从哪来（项目 / release 页 / tag / 资产 / sha256 / license）
 │   ├── env.zsh / env.bash  ←   两份逐字等价；本项目不往 PATH 里塞东西
 │   └── __output/           ←   跑 `wtool download-release` + `unpack-release` 才有（不进 git）
@@ -114,6 +122,7 @@ tools/musl-bins/            ← 本仓库（GitHub: allinkernel/wtool-musl-bins�
 下表是人读版本 —— 每个工具子目录里的 `readme.md` 是**逐工具的展开版**
 （含完整 URL、资产名、sha256、license、升级步骤）。
 
+<!-- BEGIN TOOLS-TABLE（由 scripts/gen-readmes.py --table 生成，别手改这一段） -->
 | 工具 | 命令 | 上游项目（release 页） | tag | 资产 | 静态？ |
 |---|---|---|---|---|---|
 | `bat` | `bat` | [sharkdp/bat](https://github.com/sharkdp/bat/releases/tag/v0.26.1) | `v0.26.1` | `bat-v0.26.1-x86_64-unknown-linux-musl.tar.gz` | tar.gz (musl，静态) |
@@ -145,6 +154,7 @@ tools/musl-bins/            ← 本仓库（GitHub: allinkernel/wtool-musl-bins�
 | `lazygit` | `lazygit` | [jesseduffield/lazygit](https://github.com/jesseduffield/lazygit/releases/tag/v0.66.1) | `v0.66.1` | `lazygit_0.66.1_linux_x86_64.tar.gz` | tar.gz (Go，静态) |
 | `dive` | `dive` | [wagoodman/dive](https://github.com/wagoodman/dive/releases/tag/v0.13.1) | `v0.13.1` | `dive_0.13.1_linux_amd64.tar.gz` | tar.gz (Go，静态) |
 | `fzf` | `fzf` | [junegunn/fzf](https://github.com/junegunn/fzf/releases/tag/v0.74.5) | `v0.74.5` | `fzf-0.74.5-linux_amd64.tar.gz` | tar.gz (Go，静态) |
+<!-- END TOOLS-TABLE -->
 
 
 > **上表是 `docs/tools.tsv` 的渲染结果**（`scripts/gen-readmes.py` 用的同一份数据）——

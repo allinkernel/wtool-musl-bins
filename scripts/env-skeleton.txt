@@ -18,3 +18,4 @@ if [ -z "${WTOOL_HOME:-}" ] || [ ! -d "$WTOOL_HOME" ]; then
     echo "         source \${WTOOL_HOME}/env.<SHELL>" >&2
     return 1 2>/dev/null || exit 1
 fi
+<HOOK_BLOCK>

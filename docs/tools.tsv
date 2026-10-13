@@ -1,7 +1,7 @@
 # tools/musl-bins 的唯一权威表（`scripts/gen-files.py` 读它；每个工具目录里的
 # wtool.xml 由它生成）。制表符分隔。
 #
-# 列：tool  repo  tag  asset  sha256  bytes  member  dest  archive  license  note
+# 列：tool  repo  tag  asset  sha256  bytes  member  dest  archive  license  note  generate
 #
 # · sha256 / bytes：**下载之后现算的**（`sha256sum` / `stat -c %s`）—— 不是抄来的。
 #   升级时重下重算（见 AGENTS.md 的 bump 三步）。
@@ -13,6 +13,13 @@
 #   ⚠️ 命令名与目录名不同的那几个要看清楚：bottom→btm、difftastic→difft、trippy→trip。
 # · archive：上游资产是什么形状 + 是不是 musl/静态（`kind="muslbin"` 的判据）。
 # · license：上游的（本仓库只做声明，不分发二进制）。
+# · generate：**安装时生成**的 shell 集成（D33 / D41），格式 `<shell>:<命令>`，
+#   多条用 `;` 隔开（如 `zsh:zoxide init zsh;bash:zoxide init bash`）。
+#   空白 = 这个工具不需要 shell 集成（绝大多数）。
+#   有值时 `scripts/gen-files.py` 会自动给它生成 `<generate dest="__output/<工具>.<shell>">`
+#   和 `env.<shell>` 末尾那段 source 块 —— 手不用碰 `<工具>/` 下的任何文件。
+#   ⚠️ 这条命令在 `wtool install` 时跑，PATH 前面是 `$WTOOL_HOME/usr/bin`
+#   （所以写的就是**命令名**，不是绝对路径）。
 #
 # ⚠️ 验过但**没收进来**的工具（理由写进 readme.md 与 harness/BACKLOG.md）：
 #   tokei  —— v15.0.0 的 release **一个资产都没有**；官方没有预编译二进制。
@@ -49,4 +56,4 @@ yazi	sxyazi/yazi	v26.9.1	yazi-x86_64-unknown-linux-musl.zip	9b9c39decccf8cb0ff53
 zellij	zellij-org/zellij	v0.45.1	zellij-x86_64-unknown-linux-musl.tar.gz	40bcc2e03f5d5ae8e054e39f676081fe12ab70871506996ba595834c3718eefc	18729165	zellij	usr/bin/zellij	tar.gz (musl，静态)	MIT	归档里只有 zellij 一个成员
 lazygit	jesseduffield/lazygit	v0.66.1	lazygit_0.66.1_linux_x86_64.tar.gz	7b3f30c2c06a42cf575280f907e58d7ea08411408b6b62bc926bc91cbc6c3f46	7247244	lazygit	usr/bin/lazygit	tar.gz (Go，静态)	MIT	顶层就是 lazygit + LICENSE/README
 dive	wagoodman/dive	v0.13.1	dive_0.13.1_linux_amd64.tar.gz	0970549eb4a306f8825a84145a2534153badb4d7dcf3febd1967c706367c3d0e	4026656	dive	usr/bin/dive	tar.gz (Go，静态)	MIT	顶层就是 dive + CHANGELOG/LICENSE/README
-fzf	junegunn/fzf	v0.74.5	fzf-0.74.5-linux_amd64.tar.gz	d47d7f882972c7d674dbbba998ffa4116e68379616ffac7695d0671e9a722c5f	2291079	fzf	usr/bin/fzf	tar.gz (Go，静态)	MIT	另有两条 <generate>（fzf --zsh / --bash，D33）—— 补全脚本装的时候生成
+fzf	junegunn/fzf	v0.74.5	fzf-0.74.5-linux_amd64.tar.gz	d47d7f882972c7d674dbbba998ffa4116e68379616ffac7695d0671e9a722c5f	2291079	fzf	usr/bin/fzf	tar.gz (Go，静态)	MIT	两条 <generate>（fzf --zsh / --bash，D33）—— 补全 / 按键绑定装的时候生成	zsh:fzf --zsh;bash:fzf --bash

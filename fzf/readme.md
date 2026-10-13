@@ -22,6 +22,7 @@
 | 命令名 | `fzf` |
 | 装完的版本串 | `0.74.5 (c0a193e0)`（实测 `fzf --version` 的第一行） |
 | license | **上游的：MIT** —— 本仓库只做声明，**不分发二进制** |
+| shell 集成（`<generate>`，D33） | `fzf --zsh` / `fzf --bash` —— **安装时**生成到 `__output/fzf.{zsh,bash}`，由本项目自己的 `env.{zsh,bash}` 去 source |
 
 > ⚠️ **注意**：这个目录是本仓库里唯一带 `<generate>` 的（fzf 的补全 / 按键绑定脚本，D33）：`fzf --zsh` / `fzf --bash` 在 **`wtool install` 的时候**生成到 `__output/` 下，再由本项目自己的 `env.{zsh,bash}` 去 source。**执行逻辑在第 ⑦.2 块接线** —— 在那之前这两条只被解析、不执行（引擎的 `<generate>` 目前是「解析 + 校验」），所以现在装完只有 `fzf` 命令本身，**没有补全**。另：`terminal/fzf`（老项目）**还在提供 `fzf` 命令**，把 `fzf` 迁到本目录是一次性切换时的事（D34），不属于第 ⑦.1 块。
 
@@ -32,6 +33,11 @@ wtool download-release tools/musl-bins/fzf   # 读 wtool.xml 的 <muslbin url>�
 wtool unpack-release   tools/musl-bins/fzf   # 按 member/dest 解到 __output/usr/bin/fzf
 wtool install          tools/musl-bins/fzf   # 建 L2 链：$WTOOL_HOME/usr/bin/fzf
 ```
+
+> ⚠️ **这个项目带 `<generate>`**：`wtool install` 的时候会跑 `fzf --zsh` / `fzf --bash`，
+> 把输出写到 `__output/fzf.zsh` / `__output/fzf.bash`（进账本，`wtool uninstall` 删掉）。
+> `env.zsh` / `env.bash` 各自 source 自己那一份 —— 所以 shell 集成是
+> **装的时候**才有的，**不是** source 的时候现算的。
 
 装完 `fzf` 就能直接敲 —— `$WTOOL_HOME/usr/bin` 在 `PATH` 最前（ADR-0045 §1.2），
 本项目**不自己往 PATH 里塞**。

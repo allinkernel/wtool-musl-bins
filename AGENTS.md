@@ -12,7 +12,7 @@
 - **只提交文本**。`__output/`、`__release/`、`*.tar.gz`、`*.zip` 都不进 git
   （见 `.gitignore`）。
 
-## 动手前必须知道的三件事
+## 动手前必须知道的四件事
 
 1. **项目身份 = 路径**（ADR-0037）。改子目录名字 = 换身份，要用
    `wtool move tools/musl-bins/<旧> tools/musl-bins/<新>`，别直接 `mv`
@@ -25,6 +25,30 @@
 3. **sha256 必须现算**。`docs/tools.tsv` 和每个 `<工具>/wtool.xml` 里的 sha256
    是**下载之后 `sha256sum` 出来的**，不是抄来的。上游重发资产（同一个 tag
    换文件）这种事发生过 —— 升级时**重下重算**。
+
+4. **`<工具>/` 下的三份文件都是生成物**（第 ⑦.3 块起，包括 `readme.md`）：
+   `docs/tools.tsv` 是**唯一权威**，改完跑
+   `python3 scripts/gen-files.py <工具> && python3 scripts/gen-readmes.py <工具>`。
+   手改生成物 = 下次生成时被打回去（`--check` 会报 DRIFT）。
+
+## 带 shell 集成的工具（hook 类）
+
+`zoxide` / `direnv` / `atuin` / `starship` / `navi` / `fzf` 这种要在 shell 里注册
+函数/别名的，**不用手写任何东西** —— 在 `docs/tools.tsv` 的 `generate` 列写：
+
+```
+zsh:zoxide init zsh;bash:zoxide init bash
+```
+
+`gen-files.py` 会自动生成 `<generate dest="__output/<工具>.<shell>" cmd="…"/>`
+和 `env.<shell>` 末尾那段 source 块（D33 / D41）：命令在 **`wtool install` 时**跑，
+产物落 `__output/`、进账本、`uninstall` 删掉。
+
+- **zsh 和 bash 两份都要写**（只写一份 = 另一个 shell 的用户没有集成）
+- 命令里写**命令名**，不写绝对路径 —— 跑的时候 `PATH` 前面就是
+  `$WTOOL_HOME/usr/bin`（用的是刚链上的那份二进制）
+- 加完在容器里真验一次（`zsh -f -i` / `bash --noprofile --norc -i` 里 source 完
+  看函数有没有注册）：**非交互 shell 里一个定义都不会有**，那不是坏了
 
 ## 升级一个工具（bump）
 
@@ -39,10 +63,11 @@ curl -fsSL -H 'Accept: application/octet-stream' \
   "https://api.github.com/repos/<owner>/<repo>/releases/assets/<id>" -o /tmp/a
 sha256sum /tmp/a
 
-# ③ 三个地方一起改：
-#    <工具>/wtool.xml 的 <muslbin url= tag= sha256=>（还有 member=，如果归档里换了名字）
-#    <工具>/readme.md   的「当前版本」一节
-#    docs/tools.tsv     那一行
+# ③ 改**一处**：docs/tools.tsv 那一行（tag / asset / sha256 / bytes / member）
+#    然后重新生成（**别手改 <工具>/ 下的文件**，它们是生成物）：
+python3 scripts/gen-files.py   <工具>
+python3 scripts/gen-readmes.py <工具>
+# ④ 实测的 `<命令> --version` 第一行补进 scripts/versions.tsv，再跑一次 ③
 ```
 
 改完在**临时** `$WTOOL_HOME` 里跑一遍 `download-release` → `unpack-release` →

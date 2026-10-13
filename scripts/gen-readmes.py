@@ -50,7 +50,7 @@ README = """# `{tool}` —— {repo} 的 x86_64 静态二进制
 | 落点（`__output/` 下） | `{dest}` |
 | 命令名 | `{cmd}` |
 | 装完的版本串 | `{version}`（实测 `{version_cmd}` 的第一行） |
-| license | **上游的：{license}** —— 本仓库只做声明，**不分发二进制** |
+| license | **上游的：{license}** —— 本仓库只做声明，**不分发二进制** |{generate_row}
 
 {note_block}\
 ## 怎么装
@@ -60,7 +60,7 @@ wtool download-release tools/musl-bins/{tool}   # 读 wtool.xml 的 <muslbin url
 wtool unpack-release   tools/musl-bins/{tool}   # 按 member/dest 解到 __output/{dest}
 wtool install          tools/musl-bins/{tool}   # 建 L2 链：$WTOOL_HOME/usr/bin/{cmd}
 ```
-
+{generate_howto}
 装完 `{cmd}` 就能直接敲 —— `$WTOOL_HOME/usr/bin` 在 `PATH` 最前（ADR-0045 §1.2），
 本项目**不自己往 PATH 里塞**。
 
@@ -146,6 +146,25 @@ EXTRA = {
 }
 
 
+TABLE_BEGIN = "<!-- BEGIN TOOLS-TABLE（由 scripts/gen-readmes.py --table 生成，别手改这一段） -->"
+TABLE_END = "<!-- END TOOLS-TABLE -->"
+
+
+def render_table(rows):
+    """仓库根 README.md 里那张「工具总表」（人读版，数据还是 docs/tools.tsv）。
+
+    表在 README.md 里由上面两个标记包着 —— `--check` 会比对，漂了会报。
+    """
+    out = ["| 工具 | 命令 | 上游项目（release 页） | tag | 资产 | 静态？ |",
+           "|---|---|---|---|---|---|"]
+    for r in rows:
+        cmd = r["dest"].rsplit("/", 1)[-1]
+        out.append("| `%s` | `%s` | [%s](https://github.com/%s/releases/tag/%s) | `%s` | `%s` | %s |"
+                   % (r["tool"], cmd, r["repo"], r["repo"], r["tag"],
+                      r["tag"], r["asset"], r["archive"]))
+    return "\n".join(out) + "\n"
+
+
 def main():
     g = load_gen()
     ap = argparse.ArgumentParser()
@@ -154,6 +173,8 @@ def main():
     ap.add_argument("--out", default=os.path.join(g.os.path.dirname(
         g.os.path.abspath(g.__file__)), g.os.pardir))
     ap.add_argument("--check", action="store_true")
+    ap.add_argument("--table", action="store_true",
+                    help="把仓库 README.md 里那张工具总表打到 stdout（--check 时比对 README.md）")
     ap.add_argument("tools", nargs="*")
     args = ap.parse_args()
 
@@ -161,6 +182,30 @@ def main():
     if args.tools:
         want = set(args.tools)
         rows = [r for r in rows if r["tool"] in want]
+
+    readme = os.path.join(args.out, "README.md")
+    if args.table:
+        table = render_table(rows)
+        if not args.check:
+            sys.stdout.write(table)
+            return 0
+        # --check：README.md 里那段（两个标记之间）必须和渲染结果逐字一致
+        if not os.path.isfile(readme):
+            sys.stderr.write("没有 %s —— 工具总表没地方可比\n" % readme)
+            return 1
+        with open(readme, encoding="utf-8") as fh:
+            text = fh.read()
+        if TABLE_BEGIN not in text or TABLE_END not in text:
+            sys.stderr.write("%s 里没有工具总表的两个标记（%s / %s）\n"
+                             % (readme, TABLE_BEGIN, TABLE_END))
+            return 1
+        have = text.split(TABLE_BEGIN, 1)[1].split(TABLE_END, 1)[0].lstrip("\n")
+        if have != table:
+            sys.stderr.write("DRIFT %s 里的工具总表和 docs/tools.tsv 对不上"
+                             "（跑 `python3 scripts/gen-readmes.py --table` 重新贴）\n" % readme)
+            return 1
+        print("OK   %s 里的工具总表 = docs/tools.tsv 的渲染" % readme)
+        return 0
 
     extra = os.path.join(g.os.path.dirname(g.os.path.abspath(g.__file__)), "versions.tsv")
     vers = {}
@@ -184,6 +229,21 @@ def main():
         member_h = ("`%s`" % row["member"]) if row["member"] else "—（裸二进制，没有归档）"
         note = EXTRA.get(tool, "")
         note_block = NOTE_TEMPLATE.format(note=note) if note else ""
+        # 带 shell 集成的工具（表里 generate 列非空）：表里多一行 + 装法下面多一段。
+        # ⚠️ 两个都**自带前导换行**（不是整行占位）：空格工具那边一个字节都不多出来，
+        #    否则 30 份没 hook 的 readme 会平白多一个空行。
+        gens = g.parse_generate(row.get("generate", ""))
+        generate_row = generate_howto = ""
+        if gens:
+            generate_row = ("\n| shell 集成（`<generate>`，D33） | %s —— **安装时**生成到 "
+                            "`__output/%s.{zsh,bash}`，由本项目自己的 `env.{zsh,bash}` 去 source |"
+                            % (" / ".join("`%s`" % c for _s, c in gens), tool))
+            generate_howto = (
+                "\n> ⚠️ **这个项目带 `<generate>`**：`wtool install` 的时候会跑 %s，\n"
+                "> 把输出写到 `__output/%s.zsh` / `__output/%s.bash`（进账本，`wtool uninstall` 删掉）。\n"
+                "> `env.zsh` / `env.bash` 各自 source 自己那一份 —— 所以 shell 集成是\n"
+                "> **装的时候**才有的，**不是** source 的时候现算的。\n"
+                % (" / ".join("`%s`" % c for _s, c in gens), tool, tool))
         bump_warn = ""
         if not row["member"]:
             bump_warn = ("\n   > 这个资产是**裸二进制**（不是归档）—— 换 tag 时"
@@ -196,7 +256,8 @@ def main():
             sha256=row["sha256"], archive=row["archive"], member_h=member_h,
             dest=row["dest"], cmd=cmd, license=row["license"] or "见上游仓库",
             version=vers.get(tool, "（见上游）"), version_cmd="%s --version" % cmd,
-            note_block=note_block, bump_warn=bump_warn)
+            note_block=note_block, bump_warn=bump_warn,
+            generate_row=generate_row, generate_howto=generate_howto)
         p = os.path.join(args.out, tool, "readme.md")
         if args.check:
             if os.path.isfile(p):

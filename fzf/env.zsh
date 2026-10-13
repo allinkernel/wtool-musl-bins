@@ -19,11 +19,8 @@ if [ -z "${WTOOL_HOME:-}" ] || [ ! -d "$WTOOL_HOME" ]; then
     return 1 2>/dev/null || exit 1
 fi
 
-# 单独 source（不经 wtool 块）时的兜底：L1 路径就是项目在 $WTOOL_HOME 里的稳定地址
-[ -n "${WTOOL_PROJECT_DIR:-}" ] || WTOOL_PROJECT_DIR="$WTOOL_HOME/wtool/tools/musl-bins/fzf"
-
 # ---------------------------------------------------------------------------
-# 补全 / 按键绑定：**安装时生成**，这里只负责 source（D33 / D41）
+# shell 集成：**安装时生成**，这里只负责 source（D33 / D41）
 #
 # 生成物落在 __output/ 下（不是源码树）：它是**安装期产物**，不进 git。
 # 生成它的命令写在 wtool.xml 里：
@@ -31,14 +28,16 @@ fi
 # `wtool install` 时跑（产物进账本）、`wtool uninstall` 时删。
 #
 # ‼️ 生成物读不到就**说一句再跳过**，绝不静默：静默的症状是"fzf 装好了，
-#    但 Tab 补全没反应"，而这里一声不吭 —— 和本文件顶部那段是同一个理由
+#    但 shell 集成没生效"，而这里一声不吭 —— 和本文件顶部那段是同一个理由
 #    （半装状态最难查）。真装过的话它一定在。
 # ---------------------------------------------------------------------------
+# 单独 source（不经 wtool 块）时的兜底：L1 路径就是项目在 $WTOOL_HOME 里的稳定地址
+[ -n "${WTOOL_PROJECT_DIR:-}" ] || WTOOL_PROJECT_DIR="$WTOOL_HOME/wtool/tools/musl-bins/fzf"
 WTOOL_FZF_RC="$WTOOL_PROJECT_DIR/__output/fzf.zsh"
 if [ -r "$WTOOL_FZF_RC" ]; then
     source "$WTOOL_FZF_RC"
 else
-    echo "wtool: fzf 的补全脚本还没生成：$WTOOL_FZF_RC" >&2
+    echo "wtool: fzf 的 shell 集成还没生成：$WTOOL_FZF_RC" >&2
     echo "       它是 wtool install 时按 wtool.xml 的 <generate> 生成的；" >&2
     echo "       跑一次 wtool install tools/musl-bins/fzf 就有了（不用重下二进制）。" >&2
 fi

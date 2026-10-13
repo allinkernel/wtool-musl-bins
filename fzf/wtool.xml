@@ -13,8 +13,9 @@
       它是"下载解出来的产物"，不是源码。落点由标签决定：$WTOOL_HOME/usr/bin/fzf。
     · **本文件不写 PATH**：$WTOOL_HOME/usr/bin 由引擎统一放最前（ADR-0045 §1.2）。
 
-  ⚠️ 另有两条 <generate>（fzf 的补全脚本，D33）—— 它是 ③ 类里
-     `fzf` 存在的理由，所以本轮就按设计写进来。-->
+  ⚠️ 另有 2 条 <generate>（fzf 的 shell 集成，D33 / D41）：生成物落在
+     __output/ 下、**装的时候**才生成（进账本，卸载时删掉），
+     再由本项目自己的 env.{zsh,bash} 去 source。-->
 <wtool schema="1" kind="muslbin" priority="60">
 
   <zshrc  src="env.zsh"/>
@@ -24,7 +25,7 @@
            tag="v0.74.5" sha256="d47d7f882972c7d674dbbba998ffa4116e68379616ffac7695d0671e9a722c5f"
            member="fzf" dest="usr/bin/fzf" arch="x86_64"/>
 
-  <!-- 补全 / 按键绑定脚本由**本项目自己的 env.{zsh,bash}** 去 source（D33）：
+  <!-- shell 集成由**本项目自己的 env.{zsh,bash}** 去 source（D33）：
        生成物落在 __output/ 下（D41），不进 git、卸载时删掉。
        cmd 在**安装时**跑，cwd = 项目根，PATH 前面是 $WTOOL_HOME/usr/bin
        （所以跑的就是刚链上的那一份二进制）。

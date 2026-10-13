@@ -143,6 +143,10 @@ EXTRA = {
            "不是 source 的时候现算的。另：`terminal/fzf`（老项目）**还在提供 `fzf` 命令**，"
            "把 `fzf` 迁到本目录是一次性切换时的事（D34）。",
     # ---- 第 ⑦.3 块：B 档纯二进制（不需要 hook）----
+    "csvlens": "B 档。⚠️ 上游**只发 `.tar.xz`**（这个 tag 下没有 `.tar.gz` / `.zip`）—— "
+               "引擎在**第 ⑦.3 块**才认得这种格式（在那之前会报「只认 .zip/.tar/.tar.gz/.tgz」，"
+               "见 `bootstrap` 的 `53bf46b`）。解压靠 python 的 `tarfile`（`r:*` 自动认 xz），"
+               "**不需要**目标机装 `xz` 命令。",
     "miller": "B 档。**命令叫 `mlr`**（不是 `miller`），所以 `dest` 是 `usr/bin/mlr`；"
               "归档里还有 `LICENSE.txt` / `README.md`，只有 `mlr` 那一个进 `__output/`。"
               "它是本仓库第二个 **BSD-2-Clause** 的项目（另一个是 `shfmt` 的 BSD-3）。",

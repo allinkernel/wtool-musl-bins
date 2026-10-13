@@ -142,6 +142,11 @@ EXTRA = {
            "生成物**进账本**、`wtool uninstall` 删掉 —— 所以补全是「装的时候」才有的，"
            "不是 source 的时候现算的。另：`terminal/fzf`（老项目）**还在提供 `fzf` 命令**，"
            "把 `fzf` 迁到本目录是一次性切换时的事（D34）。",
+    # ---- 第 ⑦.3 块：B 档纯二进制（不需要 hook）----
+    "rclone": "B 档。归档里还有 `README.html` / `README.txt` / `rclone.1` / `git-log.txt`，"
+              "只有 `member` 那一个进 `__output/`。zip 解出来 **32 MB**（本仓库第二大，"
+              "仅次于 atuin）。⚠️ 上游 asset 列表里还有 `.deb` / `.rpm` —— 那些**不要**"
+              "（要走包管理器），取的是 `.zip` 里那个静态二进制。",
     "navi": "归档里那个成员叫 **`./navi`**（`member` 就写 `./navi` —— 引擎两边都会归一："
             "去 `./` 前缀）。`<generate>` 跑 `navi widget <shell>`：它注册 "
             "`_navi_widget` 并把 **Ctrl-G** 绑上去（在 zsh 的 `bindkey` / bash 的 "

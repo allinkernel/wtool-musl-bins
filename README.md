@@ -178,6 +178,7 @@ tools/musl-bins/            ← 本仓库（GitHub: allinkernel/wtool-musl-bins�
 | `csvlens` | `csvlens` | [YS-L/csvlens](https://github.com/YS-L/csvlens/releases/tag/v0.15.1) | `v0.15.1` | `csvlens-x86_64-unknown-linux-musl.tar.xz` | tar.xz (musl，静态) |
 | `watchexec` | `watchexec` | [watchexec/watchexec](https://github.com/watchexec/watchexec/releases/tag/v2.8.0) | `v2.8.0` | `watchexec-2.8.0-x86_64-unknown-linux-musl.tar.xz` | tar.xz (musl，静态) |
 | `lf` | `lf` | [gokcehan/lf](https://github.com/gokcehan/lf/releases/tag/r42) | `r42` | `lf-linux-amd64.tar.gz` | tar.gz (Go，静态) |
+| `micro` | `micro` | [zyedidia/micro](https://github.com/zyedidia/micro/releases/tag/v2.0.15) | `v2.0.15` | `micro-2.0.15-linux64-static.tar.gz` | tar.gz (Go，静态) |
 <!-- END TOOLS-TABLE -->
 
 

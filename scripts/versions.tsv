@@ -47,3 +47,4 @@ watchexec	watchexec 2.8.0 (07e2b99e 2026-10-05) +pid1
 lf	r42
 micro	Version: 2.0.15
 hexyl	hexyl 0.17.0
+qsv	qsv 24.0.0-jemalloc+bgthread-apply;fetch;foreach;self_update-32-32;19.56 GiB-64.00 GiB-18.59 GiB-24.45 GiB (x86_64-unknown-linux-musl compiled with Rust 1.99;Linux (Ubuntu 24.04)-Linux 6.6.87.2-microsoft-standard-WSL2;AMD Ryzen 9 5950X 16-Core Processor-16) prebuilt

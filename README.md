@@ -180,6 +180,7 @@ tools/musl-bins/            ← 本仓库（GitHub: allinkernel/wtool-musl-bins�
 | `lf` | `lf` | [gokcehan/lf](https://github.com/gokcehan/lf/releases/tag/r42) | `r42` | `lf-linux-amd64.tar.gz` | tar.gz (Go，静态) |
 | `micro` | `micro` | [zyedidia/micro](https://github.com/zyedidia/micro/releases/tag/v2.0.15) | `v2.0.15` | `micro-2.0.15-linux64-static.tar.gz` | tar.gz (Go，静态) |
 | `hexyl` | `hexyl` | [sharkdp/hexyl](https://github.com/sharkdp/hexyl/releases/tag/v0.17.0) | `v0.17.0` | `hexyl-v0.17.0-x86_64-unknown-linux-musl.tar.gz` | tar.gz (musl，静态) |
+| `qsv` | `qsv` | [dathere/qsv](https://github.com/dathere/qsv/releases/tag/24.0.0) | `24.0.0` | `qsv-24.0.0-x86_64-unknown-linux-musl.zip` | zip (musl，静态) |
 <!-- END TOOLS-TABLE -->
 
 

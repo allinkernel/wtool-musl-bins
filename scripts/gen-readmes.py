@@ -153,6 +153,13 @@ EXTRA = {
              "（`file` = statically linked / `ldd` = not a dynamic executable）；"
              "拿错了那份就依赖宿主 glibc，`--version` 还照样打得出来，极难发现。"
              "`micro --version` 打的是 `Version: 2.0.15`。",
+    "qsv": "B 档。⚠️ **体积**：这个 zip 是 **56 MB**（本仓库最大的一份，比 atuin 的 16.7 MB "
+           "还大得多）—— 收它是**按 `qsv` 的官方静态资产存在**这条判据收的，"
+           "体积这一条**请用户拍板**（不要就删掉 `docs/tools.tsv` 里那一行 + 这个目录）。"
+           "包里还有 `qsvdp`（datapusher 精简版）/ `qsvlite` 两个变体与 "
+           "`COPYING` / `LICENSE-MIT` / `README` / `THIRD_PARTY_NOTICES.md` —— "
+           "**只取 `qsv` 本体**（本项目一个命令，别的变体要就另开子目录）。"
+           "`qsv --version` 那一行很长（带构建特性与机器信息），`versions.tsv` 里如实存着。",
     "watchexec": "B 档。⚠️ 上游**只发 `.tar.xz`**（同 tag 下还有 `.deb` / `.rpm`，**不取**）——"
                  "它是**引擎补 `.tar.xz` 的另一个理由**（见 `bootstrap` 的 `53bf46b`）。"
                  "归档里还有 `logo.svg` / `LICENSE` / 手册 / `completions/`，"

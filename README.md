@@ -162,17 +162,22 @@ tools/musl-bins/            ← 本仓库（GitHub: allinkernel/wtool-musl-bins�
 > **上表是 `docs/tools.tsv` 的渲染结果**（`scripts/gen-readmes.py` 用的同一份数据）——
 > 每个工具子目录里的 `readme.md` 是逐工具的展开版（完整直链、sha256、license、升级步骤）。
 >
-> ### 验过但**没收进来**的三个（下面这一节就是"为什么没有它"的答案）
+> ### 验过但**没收进来**的（下面这一节就是"为什么没有它"的答案）
 >
 > | 工具 | 上游 | 为什么没收 |
 > |---|---|---|
 > | `tokei` | XAMPPRocky/tokei | `v15.0.0` 的 release **一个资产都没有**（`assets: []`）；官方从不发预编译二进制 |
 > | `ast-grep` | ast-grep/ast-grep | 只有 `app-x86_64-unknown-linux-gnu.zip`；下下来实跑 `ldd` → 依赖 `libgcc_s` / `libm` / `libc`，**动态链接**，不是静态 |
 > | `jless` | PaulJuliusMartinez/jless | 只有 `-x86_64-unknown-linux-gnu.zip`；实跑 `ldd` → `libxcb` / `libgcc_s` / `libc`，**动态链接** |
+> | `bandwhich` | imsnif/bandwhich | `v0.23.1` 有 `-x86_64-unknown-linux-musl.tar.gz`（**静态，验过**），但它要 **root / `cap_net_raw,cap_net_admin`** 才抓得到包 —— 用户 2026-10-13 明确"要特殊权限的跳过"。要收就是个 `docs/tools.tsv` 加一行的事（`trippy` 是先例：收了 + readme 里写清 `setcap`） |
+> | `lazydocker` | jesseduffield/lazydocker | `v0.25.2` 的 `lazydocker_0.25.2_Linux_x86_64.tar.gz`（Go 静态）本身合格，但它是**连 docker daemon 的 TUI**：目标机上没有/没权限连 socket 时它一行都显示不出来 → **跳过**（用户 2026-10-13 同意"依赖 docker/k8s 在跑的跳过"） |
+> | `k9s` | derailed/k9s | 同上（要一个能连的 k8s 集群），而且 `k9s_Linux_amd64.tar.gz` 是 **41 MB** → 跳过 |
+> | `nushell` | nushell/nushell | 官方的 `nu-0.116.1-x86_64-unknown-linux-musl.tar.gz` 是 **86 MB**（不是用户说的 ~50 MB）→ **体积过大，留给用户拍板** |
+> | `ffmpeg` | FFmpeg/FFmpeg | 官方**根本不发二进制**（GitHub 上连 release 资产都没有，只有源码 tag）；网上那些"静态 ffmpeg"全是**第三方重打包**（johnvansickle / BtbN 之流）→ 按"只能第三方重打包的一律不收"**拒** |
 >
 > 判据不是"资产名里有没有 musl"，而是 **`file` + `ldd` 认不认它**。
 > `age` 就是这条判据的反例：资产名里**没有** musl，但实测**没有动态段**（纯静态 Go）→ 收。
-> 三个被拒的都不许用第三方重打包顶上（`AGENTS.md` 的"别做"）。
+> 被拒的都不许用第三方重打包顶上（`AGENTS.md` 的"别做"）。
 
 ## 这个仓库不做什么
 

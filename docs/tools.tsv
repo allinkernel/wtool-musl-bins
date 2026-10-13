@@ -1,0 +1,52 @@
+# tools/musl-bins 的唯一权威表（`scripts/gen-files.py` 读它；每个工具目录里的
+# wtool.xml 由它生成）。制表符分隔。
+#
+# 列：tool  repo  tag  asset  sha256  bytes  member  dest  archive  license  note
+#
+# · sha256 / bytes：**下载之后现算的**（`sha256sum` / `stat -c %s`）—— 不是抄来的。
+#   升级时重下重算（见 AGENTS.md 的 bump 三步）。
+# · member：归档里要取的那个成员（`unpack-release` 按它剥掉目录前缀）。
+#   空白 = 那个资产是**裸二进制**（不是归档），解出来就叫 dest 的最后一段。
+# · dest：解到 `__output/` 下的哪个**文件路径**（**不写 `__output/` 前缀**）。
+#   引擎就是这么验的：`<export_bin src>` 走 `os.path.join(项目, src)`，src 得是个**文件**。
+#   全部 28 个都落在 `usr/bin/<命令名>`（= L2 链的落点），所以 dest 一律 `usr/bin/…`。
+#   ⚠️ 命令名与目录名不同的那几个要看清楚：bottom→btm、difftastic→difft、trippy→trip。
+# · archive：上游资产是什么形状 + 是不是 musl/静态（`kind="muslbin"` 的判据）。
+# · license：上游的（本仓库只做声明，不分发二进制）。
+#
+# ⚠️ 验过但**没收进来**的工具（理由写进 readme.md 与 harness/BACKLOG.md）：
+#   tokei  —— v15.0.0 的 release **一个资产都没有**；官方没有预编译二进制。
+#   ast-grep —— 只有 `app-x86_64-unknown-linux-gnu.zip`，实测 `ldd` 依赖
+#               libgcc_s / libm / libc（glibc），不是静态 → 不收（D32 要的是静态）。
+#   jless  —— 只有 `-x86_64-unknown-linux-gnu.zip`，实测动态链接到 libxcb/libgcc_s/libc。
+#
+#tool	repo	tag	asset	sha256	bytes	member	dest	archive	license	note
+bat	sharkdp/bat	v0.26.1	bat-v0.26.1-x86_64-unknown-linux-musl.tar.gz	0dcd8ac79732c0d5b136f11f4ee00e581440e16a44eab5b3105b611bbf2cf191	3584928	bat-v0.26.1-x86_64-unknown-linux-musl/bat	usr/bin/bat	tar.gz (musl，静态)	MIT OR Apache-2.0	归档里还带 CHANGELOG/autocomplete/bat.1，只有 member 那一个进 __output
+eza	eza-community/eza	v0.23.5	eza_x86_64-unknown-linux-musl.tar.gz	e06eebab74b73d6b7d51a796a353824b001bea82df077706382e100815d28904	1412332	./eza	usr/bin/eza	tar.gz (musl，静态)	MIT	归档里只有 ./eza 一个成员
+delta	dandavison/delta	0.20.1	delta-0.20.1-x86_64-unknown-linux-musl.tar.gz	69dcb4043f55c29118f408c6efd30115e0a4e0a6709253343b8c8fa814ab4a31	3403612	delta-0.20.1-x86_64-unknown-linux-musl/delta	usr/bin/delta	tar.gz (musl，静态)	MIT	归档里还有 LICENSE/README
+dust	bootandy/dust	v1.2.6	dust-v1.2.6-x86_64-unknown-linux-musl.tar.gz	cbf2cb5c9d6227e46fc4b29c03dc43b8632020dfc5cf269d263d6e29c399e044	1256184	dust-v1.2.6-x86_64-unknown-linux-musl/dust	usr/bin/dust	tar.gz (musl，静态)	Apache-2.0	归档里还有 LICENSE/README
+duf	muesli/duf	v0.9.1	duf_0.9.1_linux_x86_64.tar.gz	5add851e7062c5e56939abb664705e4d14fa2d06289490aff31d51f153832de7	1285584	duf	usr/bin/duf	tar.gz (Go，静态)	MIT	顶层就是 duf + duf.1（扁平）
+procs	dalance/procs	v0.14.12	procs-v0.14.12-x86_64-linux.zip	81964faf9d5cd0e9f399d5d0954fb6fe4d4d9f7d3cbec4507633df5a45b11713	2565746	procs	usr/bin/procs	zip (musl，静态)	MIT	包内只有一个 procs（上游只发 linux 用 musl 编的那一份）
+bottom	ClementTsang/bottom	0.14.9	bottom_x86_64-unknown-linux-musl.tar.gz	b4bee5b193e7d3f6e090ac14f0ca15acec2e7fe4ef64988e0bfc492e16c28c9a	2126967	btm	usr/bin/btm	tar.gz (musl，静态)	MIT	**命令叫 btm**（不是 bottom）；dest 因此是 usr/bin/btm
+jq	jqlang/jq	jq-1.8.2	jq-linux-amd64	b1c22172dd303f3be49e935aa56aa48a8b7a46e0bc838b4997d3bb451495870f	2267912		usr/bin/jq	tar 无（裸二进制，静态）	MIT	raw ELF；上游发的是**裸文件**不是归档，解出来就叫 jq
+gojq	itchyny/gojq	v0.12.19	gojq_v0.12.19_linux_amd64.tar.gz	bdfaf9acbe088973c549dadbf299c06dc9a84f1ca38c731ca04a08a901077f64	1797166	gojq_v0.12.19_linux_amd64/gojq	usr/bin/gojq	tar.gz (Go，静态)	MIT	归档里还有 README/CREDITS 与一个 _gojq
+yq	mikefarah/yq	v4.54.1	yq_linux_amd64	8e34fc298390875de416e6a4afcb8cabeceb25d9aa8506c1a2f9353cf702ea5f	14168224		usr/bin/yq	tar 无（裸二进制，静态）	MIT	raw ELF；上游同时发裸文件与 .tar.gz，取裸的那份
+sd	chmln/sd	v1.1.0	sd-v1.1.0-x86_64-unknown-linux-musl.tar.gz	02f00f4777d43e8e95b7b8d49e1a0d6e502fed4b8e79c1c8b8063857a30caa2e	1049511	sd-v1.1.0-x86_64-unknown-linux-musl/sd	usr/bin/sd	tar.gz (musl，静态)	MIT	⚠️ 它 --version 打的是 1.0.0（上游 tag 与二进制里的版本号不一致，实测）
+hyperfine	sharkdp/hyperfine	v2.0.0	hyperfine-v2.0.0-x86_64-unknown-linux-musl.tar.gz	38e59087bd65520930a13cf513d8a493b7043741e8ad62349a8a9929eb61bc5c	737116	hyperfine-v2.0.0-x86_64-unknown-linux-musl/hyperfine	usr/bin/hyperfine	tar.gz (musl，静态)	MIT OR Apache-2.0	归档里带 CHANGELOG/autocomplete/hyperfine.1
+just	casey/just	1.58.0	just-1.58.0-x86_64-unknown-linux-musl.tar.gz	4a5cc2f53e6f0f8c59092a6cc38291eb729d46a7dd95d3ae582008881b84931d	2529009	just	usr/bin/just	tar.gz (musl，静态)	CC0-1.0	顶层就是 just（同层还有 Cargo.*/completions/man）
+scc	boyter/scc	v4.1.0	scc_Linux_x86_64.tar.gz	c7328436d3027f4357d3d7853f7dc3ac2bbcb4ca08f1adad91a27c593884079b	7016834	scc	usr/bin/scc	tar.gz (Go，静态)	MIT	顶层就是 scc + LICENSE/README（扁平）
+difftastic	Wilfred/difftastic	0.71.0	difft-0.71.0-x86_64-unknown-linux-musl.tar.gz	0a65e6715df992b0adae012e606bd9cc74fa6cfe90eaf13bbae165a0a19b3086	11746371	difft	usr/bin/difft	tar.gz (musl，静态)	MIT	**命令叫 difft**；归档里只有它一个
+fclones	pkolaczk/fclones	v0.35.0	fclones-0.35.0-linux-musl-x86_64.tar.gz	9eae0466e5b78871cf25822e503ee9efbfa28dc36cc167060c4a4920306389ac	2156805	target/x86_64-unknown-linux-musl/release/fclones	usr/bin/fclones	tar.gz (musl，静态)	MIT	归档里留着整条 cargo 构建路径，member 要把前缀写全
+shellcheck	koalaman/shellcheck	v0.11.0	shellcheck-v0.11.0.linux.x86_64.tar.gz	b7af85e41cc99489dcc21d66c6d5f3685138f06d34651e6d34b42ec6d54fe6f6	3773312	shellcheck-v0.11.0/shellcheck	usr/bin/shellcheck	tar.gz (静态)	GPL-3.0	静态链接（实测 ldd 不认）；归档里还带 LICENSE.txt/README.txt
+shfmt	mvdan/sh	v3.14.1	shfmt_v3.14.1_linux_amd64	76e77641faa025814b77f153b29796b8e6fa2fca03e0c76a691608b86c7ea7bf	3571872		usr/bin/shfmt	tar 无（裸二进制，静态）	BSD-3-Clause	raw ELF（Go 静态）；解出来就叫 shfmt
+age	FiloSottile/age	v1.3.2	age-v1.3.2-linux-amd64.tar.gz	cbe24006683f8eb669266162894b9a522a1af52f2665fbc63a4bb032ed26ac10	19405817	age/age	usr/bin/age	tar.gz (Go，静态)	BSD-3-Clause	资产名没写 musl，但实测**无动态段**（纯 Go 静态）→ 符合 muslbin 的实质要求；包里另有 age-keygen 等，本目录只取 age
+b3sum	BLAKE3-team/BLAKE3	1.8.7	b3sum_linux_x64_bin	5519d827b4ac438e2492e0b99e19484fa5191d34fc20b0174ebe41d3dbf9eca1	1577912		usr/bin/b3sum	tar 无（裸二进制，static-pie）	CC0-1.0 OR Apache-2.0	raw ELF（static-pie）；解出来就叫 b3sum
+glow	charmbracelet/glow	v3.0.0	glow_3.0.0_Linux_x86_64.tar.gz	13e05e4b2acc18d2aee44291aefe6325b077ec321b631a0cfa780e8e3bc33f78	6824849	glow_3.0.0_Linux_x86_64/glow	usr/bin/glow	tar.gz (Go，静态)	MIT	归档里带 LICENSE/README/completions/manpages
+xh	ducaale/xh	v0.26.2	xh-v0.26.2-x86_64-unknown-linux-musl.tar.gz	8c53b6a23435754f9e2ea8ab8c0d0296a1921404b88132cf9b364ff6e8c22a6e	4609532	xh-v0.26.2-x86_64-unknown-linux-musl/xh	usr/bin/xh	tar.gz (musl，静态)	MIT	归档里还有 doc/completions/LICENSE
+gping	orf/gping	gping-v1.21.0	gping-Linux-musl-x86_64.tar.gz	cea59e22f6faf941f054cf0925433a2e3e4e6c42dc5c778b0265279a5056aeec	1478569	gping	usr/bin/gping	tar.gz (musl，静态)	MIT	顶层就是 gping + gping.1（扁平）
+trippy	fujiapple852/trippy	0.13.0	trippy-0.13.0-x86_64-unknown-linux-musl.tar.gz	aa2b7b2a0773f3cc04da691100419049950b690fe3736d25e24ac955b63d6056	3679426	trippy-0.13.0-x86_64-unknown-linux-musl/trip	usr/bin/trip	tar.gz (musl，静态)	Apache-2.0	**命令叫 trip**（不是 trippy）；要非 root 跑得 setcap（见 readme）
+yazi	sxyazi/yazi	v26.9.1	yazi-x86_64-unknown-linux-musl.zip	9b9c39decccf8cb0ff53a7d637d38f8a79d93bbd0099f4ea9c619ef6bb392f5d	14722461	yazi-x86_64-unknown-linux-musl/yazi	usr/bin/yazi	zip (musl，静态)	MIT	包内还有 ya（辅助命令）与 completions；本目录只导出 yazi 本体
+zellij	zellij-org/zellij	v0.45.1	zellij-x86_64-unknown-linux-musl.tar.gz	40bcc2e03f5d5ae8e054e39f676081fe12ab70871506996ba595834c3718eefc	18729165	zellij	usr/bin/zellij	tar.gz (musl，静态)	MIT	归档里只有 zellij 一个成员
+lazygit	jesseduffield/lazygit	v0.66.1	lazygit_0.66.1_linux_x86_64.tar.gz	7b3f30c2c06a42cf575280f907e58d7ea08411408b6b62bc926bc91cbc6c3f46	7247244	lazygit	usr/bin/lazygit	tar.gz (Go，静态)	MIT	顶层就是 lazygit + LICENSE/README
+dive	wagoodman/dive	v0.13.1	dive_0.13.1_linux_amd64.tar.gz	0970549eb4a306f8825a84145a2534153badb4d7dcf3febd1967c706367c3d0e	4026656	dive	usr/bin/dive	tar.gz (Go，静态)	MIT	顶层就是 dive + CHANGELOG/LICENSE/README
+fzf	junegunn/fzf	v0.74.5	fzf-0.74.5-linux_amd64.tar.gz	d47d7f882972c7d674dbbba998ffa4116e68379616ffac7695d0671e9a722c5f	2291079	fzf	usr/bin/fzf	tar.gz (Go，静态)	MIT	另有两条 <generate>（fzf --zsh / --bash，D33）—— 补全脚本装的时候生成

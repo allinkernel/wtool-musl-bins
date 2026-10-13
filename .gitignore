@@ -1,0 +1,22 @@
+# 这个仓库**只放文本**（声明 + 文档 + 两个维护脚本）。
+# 二进制由 `wtool download-release` 从**上游 release** 取 —— 不进 git。
+
+# ② 类 muslbin 的产物目录（引擎建的，和 ③ 类的 __layer 一个性质）
+__output/
+__release/
+
+# 万一手工 curl 下来调试、落在项目根 —— 兜底
+/*.tar.gz
+/*.tar.xz
+/*.zip
+/*.deb
+/*.rpm
+/*.apk
+
+# python 跑维护脚本留下的
+__pycache__/
+*.pyc
+
+# 编辑器 / 系统垃圾
+.DS_Store
+*.swp

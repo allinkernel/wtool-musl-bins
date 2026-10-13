@@ -1,0 +1,37 @@
+# 实测的版本串 —— 下载解出二进制之后**真跑一次** `<cmd> --version` 的第一行。
+# 用途：`scripts/gen-readmes.py` 把它写进每个工具的 readme（"装完的版本串"一格）。
+# 这一列**只在本文件里有**（表里放不下），bump 之后要重跑一次命令更新它。
+#
+# ⚠️ 它只是**人读的佐证**，不是判据 —— 判据是 tag + sha256（对得上就是那份资产）。
+#    `sd` 就是反例：tag 是 v1.1.0，二进制里打的是 1.0.0（上游自己不一致，实测）。
+#
+#tool	version
+bat	bat 0.26.1 (979ba22)
+eza	eza eza - A modern, maintained replacement for ls / v0.23.5 [+git]
+delta	delta 0.20.1
+dust	Dust 1.2.6
+duf	duf 0.9.1 (b2f01a1ecbfd1af63015b83296c50a95260f97b1)
+procs	procs 0.14.12 ( rev: 8ad5da5, rustc: 1.96.0 )
+bottom	bottom 0.14.9
+jq	jq-1.8.2
+gojq	gojq 0.12.19 (rev: b7ebffb/go1.26.1)
+yq	yq version v4.54.1
+sd	sd 1.0.0
+hyperfine	hyperfine 2.0.0
+just	just 1.58.0
+scc	scc version 4.1.0
+difftastic	Difftastic 0.71.0
+fclones	fclones 0.35.0
+shellcheck	ShellCheck - shell script analysis tool（--version 只打这一行，不带版本号）
+shfmt	v3.14.1
+age	v1.3.2
+b3sum	b3sum 1.8.7
+glow	glow version 3.0.0 (add5e7a)
+xh	xh 0.26.2
+gping	gping 1.21.0
+trippy	trip 0.13.0
+yazi	Yazi / Version: 26.9.1 (8dd895c 2026-09-01)
+zellij	zellij 0.45.1
+lazygit	lazygit 0.66.1
+dive	dive 0.13.1
+fzf	0.74.5 (c0a193e0)

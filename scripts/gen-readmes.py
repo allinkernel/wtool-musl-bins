@@ -207,6 +207,15 @@ EXTRA = {
                "那一个可执行文件（另有 UNLICENSE / LICENSE-MIT / README / doc）。"
                "`rg --version` 打的是 **`ripgrep 15.2.0 (rev e89fff89ac)`**"
                "（不是 `rg 15.2.0`）。",
+    "fdfind": "上游是 **`sharkdp/fd`**，归档里的二进制叫 **`fd`**；本项目**故意**把项目目录"
+              "和命令名都定为 **`fdfind`** —— Ubuntu 的 `fd-find` 包提供的命令就是 `fdfind`，"
+              "用户机器上习惯/已有的也是它。所以 `member` 指向 `fd-v10.5.0-…/fd`、"
+              "`dest` 是 `usr/bin/fdfind`。**没有另建一个 `fd` 项目**：同一个上游资产只声明一次，"
+              "避免两个项目装同一个文件、`uninstall` 时互相踩（要 `fd` 就自己 "
+              "`alias fd=fdfind` —— 本项目不改 `PATH`、也不建别名）。"
+              "`fdfind --version` 打的是 `fd 10.5.0`（二进制里编进去的名字不会跟着 `dest` 改）。"
+              "归档里还有 CHANGELOG / LICENSE-* / README / autocomplete，"
+              "只有 member 那一个进 `__output/`。",
 }
 
 

@@ -9,8 +9,9 @@
 #   空白 = 那个资产是**裸二进制**（不是归档），解出来就叫 dest 的最后一段。
 # · dest：解到 `__output/` 下的哪个**文件路径**（**不写 `__output/` 前缀**）。
 #   引擎就是这么验的：`<export_bin src>` 走 `os.path.join(项目, src)`，src 得是个**文件**。
-#   全部 28 个都落在 `usr/bin/<命令名>`（= L2 链的落点），所以 dest 一律 `usr/bin/…`。
-#   ⚠️ 命令名与目录名不同的那几个要看清楚：bottom→btm、difftastic→difft、trippy→trip。
+#   本表里**所有**工具都落在 `usr/bin/<命令名>`（= L2 链的落点），所以 dest 一律 `usr/bin/…`。
+#   ⚠️ 命令名与目录名不同的那几个要看清楚：bottom→btm、difftastic→difft、trippy→trip、
+#      miller→mlr、ripgrep→rg、fdfind 的二进制在归档里叫 fd（dest 仍是 usr/bin/fdfind）。
 # · archive：上游资产是什么形状 + 是不是 musl/静态（`kind="muslbin"` 的判据）。
 # · license：上游的（本仓库只做声明，不分发二进制）。
 # · generate：**安装时生成**的 shell 集成（D33 / D41），格式 `<shell>:<命令>`，
@@ -71,3 +72,4 @@ micro	zyedidia/micro	v2.0.15	micro-2.0.15-linux64-static.tar.gz	267d238eac1e26ed
 hexyl	sharkdp/hexyl	v0.17.0	hexyl-v0.17.0-x86_64-unknown-linux-musl.tar.gz	82b374b800cc965f4116b9d5d6a50394945170d4f65b9ef6ced3b82b014de8a6	600537	hexyl-v0.17.0-x86_64-unknown-linux-musl/hexyl	usr/bin/hexyl	tar.gz (musl，静态)	MIT OR Apache-2.0	B 档；归档里 LICENSE-APACHE 与 LICENSE-MIT 都在（双许可，所以不是单一 SPDX）；还有 CHANGELOG/README/hexyl.1	
 qsv	dathere/qsv	24.0.0	qsv-24.0.0-x86_64-unknown-linux-musl.zip	0079acb8542af8b243fa861259746a6a88cef1aefc07214aaaf0f0a1b0593738	56233031	qsv	usr/bin/qsv	zip (musl，静态)	MIT	B 档；**56 MB 的 zip**（本仓库最大，解出来更大）—— 体积请用户拍板；包里还有 qsvdp/qsvlite 两个变体与 COPYING/LICENSE-MIT/README/THIRD_PARTY_NOTICES，**只取 qsv 本体**；`--version` 那一行很长（带构建特性/机器信息）	
 ripgrep	BurntSushi/ripgrep	15.2.0	ripgrep-15.2.0-x86_64-unknown-linux-musl.tar.gz	33e15bcf1624b25cdd2a55813a47a2f95dbe126268203e76aa6a585d1e7b149c	2265718	ripgrep-15.2.0-x86_64-unknown-linux-musl/rg	usr/bin/rg	tar.gz (musl，静态)	MIT OR Unlicense	命令叫 `rg`（不是 ripgrep）；归档里还有 UNLICENSE/LICENSE-MIT/README/doc，只有 member 那一个进 __output	
+fdfind	sharkdp/fd	v10.5.0	fd-v10.5.0-x86_64-unknown-linux-musl.tar.gz	761c72dc8e120d85b22292063be8a796e2eeb20eb3e4f38b8fa2343ccf3514a7	1573549	fd-v10.5.0-x86_64-unknown-linux-musl/fd	usr/bin/fdfind	tar.gz (musl，静态)	MIT OR Apache-2.0	**目录/命令叫 fdfind**（归档里的二进制叫 `fd`）；归档里还有 CHANGELOG/LICENSE-APACHE/LICENSE-MIT/README/autocomplete，只有 member 那一个进 __output；**没有另建 fd 项目**（同一个上游资产只声明一次，见 readme）	

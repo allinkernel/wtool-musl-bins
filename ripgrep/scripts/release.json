@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "project": "tools/musl-bins/ripgrep",
+  "offlineTag": "",
+  "artifacts": {
+    "ripgrep-release-offline.zip": [
+      {
+        "from": "wtool/**",
+        "to": "."
+      }
+    ]
+  },
+  "repo": "",
+  "tag": "",
+  "base_url": "",
+  "assets": [],
+  "commit": "",
+  "packed_at": "",
+  "published_at": "",
+  "wtool_engine": "",
+  "volume_size": "",
+  "declare": [],
+  "targets": [],
+  "how": ""
+}

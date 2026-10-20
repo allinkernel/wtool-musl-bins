@@ -202,6 +202,11 @@ EXTRA = {
               "不带命令名。`<generate>` 跑 `direnv hook <shell>`：注册的是 "
               "`_direnv_hook`，真正干活要用户在项目目录里放 `.envrc` 并 `direnv allow`"
               "（那是**用户自己**的事，wtool 不替他写）。",
+    # ---- 2026-10-20：用户公司机器上本来没有 fdfind / ripgrep，补进 musl-bins ----
+    "ripgrep": "命令叫 **`rg`**（不是 `ripgrep`）；归档里只有 `ripgrep-15.2.0-…/rg` "
+               "那一个可执行文件（另有 UNLICENSE / LICENSE-MIT / README / doc）。"
+               "`rg --version` 打的是 **`ripgrep 15.2.0 (rev e89fff89ac)`**"
+               "（不是 `rg 15.2.0`）。",
 }
 
 

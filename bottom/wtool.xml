@@ -10,7 +10,7 @@
       `tag` 必须钉死；`url` 必须指到**那个 tag** 的资产（不许用 latest）。
       `member` = 归档里要取的那个成员，`dest` = 解到 `__output/` 下的哪个相对路径。
     · `<export_bin src="__output/usr/bin/btm">` 的 src **必须在 __output/ 下**（D40）——
-      它是"下载解出来的产物"，不是源码。落点由标签决定：$WTOOL_HOME/usr/bin/bottom。
+      它是"下载解出来的产物"，不是源码。落点由标签决定：$WTOOL_HOME/usr/bin/btm。
     · **本文件不写 PATH**：$WTOOL_HOME/usr/bin 由引擎统一放最前（ADR-0045 §1.2）。
 -->
 <wtool schema="1" kind="muslbin" priority="60">

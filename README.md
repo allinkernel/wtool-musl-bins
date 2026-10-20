@@ -35,7 +35,7 @@ tools/musl-bins/            ← 本仓库（GitHub: allinkernel/wtool-musl-bins�
 │   ├── gen-readmes.py      ←   同上 → 生成每个工具的 readme.md + 本文件里那张工具总表
 │   ├── env-skeleton.txt    ←   env.{zsh,bash} 的模板（两份逐字等价靠它保证）
 │   └── versions.tsv        ←   实测的 `<命令> --version` 第一行（人读的佐证）
-├── bat/                    ← 一个工具 = 一个 wtool 项目（第 ⑦.3 块之后 42 个：29 + 5 hook + 8 B 档）
+├── bat/                    ← 一个工具 = 一个 wtool 项目（第 ⑦.3 块之后 43 个：30 + 5 hook + 8 B 档）
 │   ├── wtool.xml           ←   kind="muslbin" + <muslbin …> + <export_bin …>（hook 类还有 <generate>）
 │   ├── readme.md           ←   这个二进制从哪来（项目 / release 页 / tag / 资产 / sha256 / license）
 │   ├── env.zsh / env.bash  ←   两份逐字等价；本项目不往 PATH 里塞东西
@@ -181,6 +181,7 @@ tools/musl-bins/            ← 本仓库（GitHub: allinkernel/wtool-musl-bins�
 | `micro` | `micro` | [zyedidia/micro](https://github.com/zyedidia/micro/releases/tag/v2.0.15) | `v2.0.15` | `micro-2.0.15-linux64-static.tar.gz` | tar.gz (Go，静态) |
 | `hexyl` | `hexyl` | [sharkdp/hexyl](https://github.com/sharkdp/hexyl/releases/tag/v0.17.0) | `v0.17.0` | `hexyl-v0.17.0-x86_64-unknown-linux-musl.tar.gz` | tar.gz (musl，静态) |
 | `qsv` | `qsv` | [dathere/qsv](https://github.com/dathere/qsv/releases/tag/24.0.0) | `24.0.0` | `qsv-24.0.0-x86_64-unknown-linux-musl.zip` | zip (musl，静态) |
+| `ripgrep` | `rg` | [BurntSushi/ripgrep](https://github.com/BurntSushi/ripgrep/releases/tag/15.2.0) | `15.2.0` | `ripgrep-15.2.0-x86_64-unknown-linux-musl.tar.gz` | tar.gz (musl，静态) |
 <!-- END TOOLS-TABLE -->
 
 

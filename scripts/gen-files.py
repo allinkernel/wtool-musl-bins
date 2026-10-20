@@ -86,7 +86,7 @@ WTOOL_XML = """<?xml version="1.0" encoding="UTF-8"?>
       `tag` 必须钉死；`url` 必须指到**那个 tag** 的资产（不许用 latest）。
       `member` = 归档里要取的那个成员，`dest` = 解到 `__output/` 下的哪个相对路径。
     · `<export_bin src="__output/{dest}">` 的 src **必须在 __output/ 下**（D40）——
-      它是"下载解出来的产物"，不是源码。落点由标签决定：$WTOOL_HOME/usr/bin/{tool}。
+      它是"下载解出来的产物"，不是源码。落点由标签决定：$WTOOL_HOME/usr/bin/{cmd}。
     · **本文件不写 PATH**：$WTOOL_HOME/usr/bin 由引擎统一放最前（ADR-0045 §1.2）。
 {generate_comment}-->
 <wtool schema="1" kind="muslbin" priority="60">
@@ -175,7 +175,8 @@ def render_xml(row):
         generate_comment = GENERATE_COMMENT.format(
             tool=tool, n=len(parse_generate(row["generate"])))
     return WTOOL_XML.format(
-        tool=tool, repo=row["repo"], tag=row["tag"],
+        tool=tool, cmd=row["dest"].rsplit("/", 1)[-1],
+        repo=row["repo"], tag=row["tag"],
         license=row["license"] or "见上游仓库",
         url=xml_escape("https://github.com/%s/releases/download/%s/%s"
                        % (row["repo"], row["tag"], row["asset"])),

@@ -22,7 +22,7 @@
 | 命令名 | `direnv` |
 | 装完的版本串 | `2.38.2`（实测 `direnv --version` 的第一行） |
 | license | **上游的：MIT** —— 本仓库只做声明，**不分发二进制** |
-| shell 集成（`<generate>`，D33） | `direnv hook zsh` / `direnv hook bash` —— **安装时**生成到 `__output/direnv.{zsh,bash}`，由本项目自己的 `env.{zsh,bash}` 去 source |
+| shell 集成（`<generate>`，D33） | `sh ../scripts/gen-direnv-hook.sh zsh` / `sh ../scripts/gen-direnv-hook.sh bash` —— **安装时**生成到 `__output/direnv.{zsh,bash}`，由本项目自己的 `env.{zsh,bash}` 去 source |
 
 > ⚠️ **注意**：上游发的是**裸文件**（`direnv.linux-amd64`，没有归档）→ `member` 留空，解出来直接落 `usr/bin/direnv`。它的 `--version` 只打版本号（`2.38.2`），不带命令名。`<generate>` 跑 `direnv hook <shell>`：注册的是 `_direnv_hook`，真正干活要用户在项目目录里放 `.envrc` 并 `direnv allow`（那是**用户自己**的事，wtool 不替他写）。
 
@@ -34,7 +34,7 @@ wtool unpack-release   tools/musl-bins/direnv   # 按 member/dest 解到 __outpu
 wtool install          tools/musl-bins/direnv   # 建 L2 链：$WTOOL_HOME/usr/bin/direnv
 ```
 
-> ⚠️ **这个项目带 `<generate>`**：`wtool install` 的时候会跑 `direnv hook zsh` / `direnv hook bash`，
+> ⚠️ **这个项目带 `<generate>`**：`wtool install` 的时候会跑 `sh ../scripts/gen-direnv-hook.sh zsh` / `sh ../scripts/gen-direnv-hook.sh bash`，
 > 把输出写到 `__output/direnv.zsh` / `__output/direnv.bash`（进账本，`wtool uninstall` 删掉）。
 > `env.zsh` / `env.bash` 各自 source 自己那一份 —— 所以 shell 集成是
 > **装的时候**才有的，**不是** source 的时候现算的。

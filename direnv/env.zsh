@@ -24,7 +24,7 @@ fi
 #
 # 生成物落在 __output/ 下（不是源码树）：它是**安装期产物**，不进 git。
 # 生成它的命令写在 wtool.xml 里：
-#     <generate dest="__output/direnv.zsh" cmd="direnv hook zsh"/>
+#     <generate dest="__output/direnv.zsh" cmd="sh ../scripts/gen-direnv-hook.sh zsh"/>
 # `wtool install` 时跑（产物进账本）、`wtool uninstall` 时删。
 #
 # ‼️ 生成物读不到就**说一句再跳过**，绝不静默：静默的症状是"direnv 装好了，

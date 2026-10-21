@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "project": "tools/musl-bins/lf",
-  "offlineTag": "offline-2026-10-14",
+  "offlineTag": "offline-2026-10-21",
   "artifacts": {
     "lf-release-offline.zip": [
       {

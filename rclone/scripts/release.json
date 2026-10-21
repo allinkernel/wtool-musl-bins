@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "project": "tools/musl-bins/rclone",
-  "offlineTag": "offline-2026-10-14",
+  "offlineTag": "offline-2026-10-21",
   "artifacts": {
     "rclone-release-offline.zip": [
       {

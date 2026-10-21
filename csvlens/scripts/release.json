@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "project": "tools/musl-bins/csvlens",
-  "offlineTag": "offline-2026-10-14",
+  "offlineTag": "offline-2026-10-21",
   "artifacts": {
     "csvlens-release-offline.zip": [
       {

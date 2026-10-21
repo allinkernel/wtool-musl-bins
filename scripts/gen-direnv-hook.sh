@@ -30,6 +30,23 @@ _bin="$WTOOL_HOME/usr/bin/direnv"
 # direnv 会把软链解析成真实路径再写进 hook，所以两种形式都要替换。
 _real=$(readlink -f -- "$_bin" 2>/dev/null || printf '%s' "$_bin")
 
-"$_bin" hook "$_sh" \
-    | sed -e "s|$_real|\${WTOOL_HOME}/usr/bin/direnv|g" \
-          -e "s|$_bin|\${WTOOL_HOME}/usr/bin/direnv|g"
+# ⚠️ 关键：direnv 把路径包在 **`$'…'`（ANSI-C 引用）** 里 ——
+#     vars="$($'/real/path/direnv' export bash)";
+#   `$'…'` 里 **不做参数展开**！所以只替换字符串会得到一个**字面量**
+#   `${WTOOL_HOME}/usr/bin/direnv`，目标机上每条命令都报
+#     _direnv_hook:5: no such file or directory: ${WTOOL_HOME}/usr/bin/direnv
+#   （2026-10-21 用户 VM 实测，第二轮）。
+#   必须把**整个 `$'<path>'` 记号**换成 `"${WTOOL_HOME}/usr/bin/direnv"`（双引号才展开）。
+_pat() {   # <路径> → 打印 sed 表达式（四种包法都换成双引号形式）
+    printf '%s\n' \
+        "s|\\\$'$1'|\"\${WTOOL_HOME}/usr/bin/direnv\"|g" \
+        "s|\"$1\"|\"\${WTOOL_HOME}/usr/bin/direnv\"|g" \
+        "s|'$1'|\"\${WTOOL_HOME}/usr/bin/direnv\"|g" \
+        "s|$1|\"\${WTOOL_HOME}/usr/bin/direnv\"|g"
+}
+
+{ _pat "$_real"; _pat "$_bin"; } > /tmp/.gen-direnv-hook.sed.$$
+"$_bin" hook "$_sh" | sed -f /tmp/.gen-direnv-hook.sed.$$
+_rc=$?
+rm -f /tmp/.gen-direnv-hook.sed.$$
+exit $_rc

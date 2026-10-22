@@ -42,3 +42,15 @@ else
     echo "       跑一次 wtool install tools/musl-bins/fzf 就有了（不用重下二进制）。" >&2
 fi
 unset WTOOL_FZF_RC
+
+# ---------------------------------------------------------------------------
+# 按键（2026-10-22 用户口径）：
+#   Up  = `up-line-or-history` —— **原生**行为，不弹任何选择器。
+#   ^R  = fzf 自己的 `fzf-history-widget`（上面那份生成物绑的），**本块不动**。
+#   Ctrl-P **不绑**（用户原话："还是 zsh 不需要，给 bash 弄上就够了"）。
+# 显式绑 Up 是兜底：oh-my-zsh 之类的插件先加载时会把 Up 抢去做前缀搜索。
+# ---------------------------------------------------------------------------
+if [[ -o interactive ]]; then
+    bindkey -M emacs '^[[A' up-line-or-history 2>/dev/null
+    bindkey -M viins '^[[A' up-line-or-history 2>/dev/null
+fi

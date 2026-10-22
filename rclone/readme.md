@@ -23,7 +23,7 @@
 | 装完的版本串 | `rclone v1.75.2`（实测 `rclone --version` 的第一行） |
 | license | **上游的：MIT** —— 本仓库只做声明，**不分发二进制** |
 
-> ⚠️ **注意**：B 档。归档里还有 `README.html` / `README.txt` / `rclone.1` / `git-log.txt`，只有 `member` 那一个进 `__output/`。zip 解出来 **32 MB**（本仓库第二大，仅次于 atuin）。⚠️ 上游 asset 列表里还有 `.deb` / `.rpm` —— 那些**不要**（要走包管理器），取的是 `.zip` 里那个静态二进制。
+> ⚠️ **注意**：B 档。归档里还有 `README.html` / `README.txt` / `rclone.1` / `git-log.txt`，只有 `member` 那一个进 `__output/`。zip 解出来 **32 MB**（本仓库第二大，仅次于 `qsv`）。⚠️ 上游 asset 列表里还有 `.deb` / `.rpm` —— 那些**不要**（要走包管理器），取的是 `.zip` 里那个静态二进制。
 
 ## 怎么装
 

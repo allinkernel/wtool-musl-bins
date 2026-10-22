@@ -140,7 +140,10 @@ EXTRA = {
            "`fzf --zsh` / `fzf --bash` 在 **`wtool install` 的时候**生成到 `__output/` 下，"
            "再由本项目自己的 `env.{zsh,bash}` 去 source（各 source 自己那一份）。"
            "生成物**进账本**、`wtool uninstall` 删掉 —— 所以补全是「装的时候」才有的，"
-           "不是 source 的时候现算的。另：`terminal/fzf`（老项目）**还在提供 `fzf` 命令**，"
+           "不是 source 的时候现算的。另：`env.bash` 在 source 完把 **Ctrl-P** 绑到"
+           "fzf 的历史搜索（`__fzf_history__`，**选中回车只把命令填到命令行上、不执行**），"
+           "`env.zsh` 把 **Up** 显式绑回原生 `up-line-or-history`（不弹选择器、**不绑** Ctrl-P；"
+           "zsh 的 ^R 保持 fzf 自己的）。另：`terminal/fzf`（老项目）**还在提供 `fzf` 命令**，"
            "把 `fzf` 迁到本目录是一次性切换时的事（D34）。",
     # ---- 第 ⑦.3 块：B 档纯二进制（不需要 hook）----
     "lf": "B 档。tag 是 **`r42`** 这种形式（不是 `v` 开头）—— `<muslbin tag=>` 照抄即可。"
@@ -153,8 +156,8 @@ EXTRA = {
              "（`file` = statically linked / `ldd` = not a dynamic executable）；"
              "拿错了那份就依赖宿主 glibc，`--version` 还照样打得出来，极难发现。"
              "`micro --version` 打的是 `Version: 2.0.15`。",
-    "qsv": "B 档。⚠️ **体积**：这个 zip 是 **56 MB**（本仓库最大的一份，比 atuin 的 16.7 MB "
-           "还大得多）—— 收它是**按 `qsv` 的官方静态资产存在**这条判据收的，"
+    "qsv": "B 档。⚠️ **体积**：这个 zip 是 **56 MB**（本仓库最大的一份）—— 收它是"
+           "**按 `qsv` 的官方静态资产存在**这条判据收的，"
            "体积这一条**请用户拍板**（不要就删掉 `docs/tools.tsv` 里那一行 + 这个目录）。"
            "包里还有 `qsvdp`（datapusher 精简版）/ `qsvlite` 两个变体与 "
            "`COPYING` / `LICENSE-MIT` / `README` / `THIRD_PARTY_NOTICES.md` —— "
@@ -174,7 +177,7 @@ EXTRA = {
               "它是本仓库第二个 **BSD-2-Clause** 的项目（另一个是 `shfmt` 的 BSD-3）。",
     "rclone": "B 档。归档里还有 `README.html` / `README.txt` / `rclone.1` / `git-log.txt`，"
               "只有 `member` 那一个进 `__output/`。zip 解出来 **32 MB**（本仓库第二大，"
-              "仅次于 atuin）。⚠️ 上游 asset 列表里还有 `.deb` / `.rpm` —— 那些**不要**"
+              "仅次于 `qsv`）。⚠️ 上游 asset 列表里还有 `.deb` / `.rpm` —— 那些**不要**"
               "（要走包管理器），取的是 `.zip` 里那个静态二进制。",
     "navi": "归档里那个成员叫 **`./navi`**（`member` 就写 `./navi` —— 引擎两边都会归一："
             "去 `./` 前缀）。`<generate>` 跑 `navi widget <shell>`：它注册 "
@@ -186,11 +189,6 @@ EXTRA = {
                 "不想要就别装 —— 别的 muslbin 都不会动 shell 的显示。"
                 "它是本仓库唯一 **ISC** 许可的（其余都是 MIT / Apache-2.0 / BSD）。"
                 "配置在 `~/.config/starship.toml`（**用户自己**的，wtool 不写）。",
-    "atuin": "归档里那个成员带一层目录前缀（`atuin-x86_64-unknown-linux-musl/atuin`）。"
-             "⚠️ 解出来是 **41 MB**（压缩后 16.7 MB）—— 本仓库里最大的一个。"
-             "`<generate>` 跑 `atuin init <shell>`。它的历史默认存在**本地 SQLite**"
-             "（`~/.local/share/atuin`），要用同步得自己 `atuin register` / `atuin login`"
-             "（那是**用户自己**的事，wtool 不碰）。",
     # ---- 第 ⑦.3 块：hook 类（<generate> 出各自的 shell 集成）----
     "zoxide": "归档里**也有** `completions/zoxide.{bash,fish,nu,ps1,ts,elv}` 和 man 页，"
               "但本项目**不用它们** —— shell 集成是 `<generate>` 在**安装时**跑 "

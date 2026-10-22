@@ -24,7 +24,7 @@
 | license | **上游的：MIT** —— 本仓库只做声明，**不分发二进制** |
 | shell 集成（`<generate>`，D33） | `fzf --zsh` / `fzf --bash` —— **安装时**生成到 `__output/fzf.{zsh,bash}`，由本项目自己的 `env.{zsh,bash}` 去 source |
 
-> ⚠️ **注意**：这个目录带两条 `<generate>`（fzf 的补全 / 按键绑定脚本，D33）：`fzf --zsh` / `fzf --bash` 在 **`wtool install` 的时候**生成到 `__output/` 下，再由本项目自己的 `env.{zsh,bash}` 去 source（各 source 自己那一份）。生成物**进账本**、`wtool uninstall` 删掉 —— 所以补全是「装的时候」才有的，不是 source 的时候现算的。另：`terminal/fzf`（老项目）**还在提供 `fzf` 命令**，把 `fzf` 迁到本目录是一次性切换时的事（D34）。
+> ⚠️ **注意**：这个目录带两条 `<generate>`（fzf 的补全 / 按键绑定脚本，D33）：`fzf --zsh` / `fzf --bash` 在 **`wtool install` 的时候**生成到 `__output/` 下，再由本项目自己的 `env.{zsh,bash}` 去 source（各 source 自己那一份）。生成物**进账本**、`wtool uninstall` 删掉 —— 所以补全是「装的时候」才有的，不是 source 的时候现算的。另：`env.bash` 在 source 完把 **Ctrl-P** 绑到fzf 的历史搜索（`__fzf_history__`，**选中回车只把命令填到命令行上、不执行**），`env.zsh` 把 **Up** 显式绑回原生 `up-line-or-history`（不弹选择器、**不绑** Ctrl-P；zsh 的 ^R 保持 fzf 自己的）。另：`terminal/fzf`（老项目）**还在提供 `fzf` 命令**，把 `fzf` 迁到本目录是一次性切换时的事（D34）。
 
 ## 怎么装
 

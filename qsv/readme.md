@@ -23,7 +23,7 @@
 | 装完的版本串 | `qsv 24.0.0-jemalloc+bgthread-apply;fetch;foreach;self_update-32-32;19.56 GiB-64.00 GiB-18.59 GiB-24.45 GiB (x86_64-unknown-linux-musl compiled with Rust 1.99;Linux (Ubuntu 24.04)-Linux 6.6.87.2-microsoft-standard-WSL2;AMD Ryzen 9 5950X 16-Core Processor-16) prebuilt`（实测 `qsv --version` 的第一行） |
 | license | **上游的：MIT** —— 本仓库只做声明，**不分发二进制** |
 
-> ⚠️ **注意**：B 档。⚠️ **体积**：这个 zip 是 **56 MB**（本仓库最大的一份，比 atuin 的 16.7 MB 还大得多）—— 收它是**按 `qsv` 的官方静态资产存在**这条判据收的，体积这一条**请用户拍板**（不要就删掉 `docs/tools.tsv` 里那一行 + 这个目录）。包里还有 `qsvdp`（datapusher 精简版）/ `qsvlite` 两个变体与 `COPYING` / `LICENSE-MIT` / `README` / `THIRD_PARTY_NOTICES.md` —— **只取 `qsv` 本体**（本项目一个命令，别的变体要就另开子目录）。`qsv --version` 那一行很长（带构建特性与机器信息），`versions.tsv` 里如实存着。
+> ⚠️ **注意**：B 档。⚠️ **体积**：这个 zip 是 **56 MB**（本仓库最大的一份）—— 收它是**按 `qsv` 的官方静态资产存在**这条判据收的，体积这一条**请用户拍板**（不要就删掉 `docs/tools.tsv` 里那一行 + 这个目录）。包里还有 `qsvdp`（datapusher 精简版）/ `qsvlite` 两个变体与 `COPYING` / `LICENSE-MIT` / `README` / `THIRD_PARTY_NOTICES.md` —— **只取 `qsv` 本体**（本项目一个命令，别的变体要就另开子目录）。`qsv --version` 那一行很长（带构建特性与机器信息），`versions.tsv` 里如实存着。
 
 ## 怎么装
 

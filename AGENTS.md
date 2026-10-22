@@ -33,7 +33,7 @@
 
 ## 带 shell 集成的工具（hook 类）
 
-`zoxide` / `direnv` / `atuin` / `starship` / `navi` / `fzf` 这种要在 shell 里注册
+`zoxide` / `direnv` / `starship` / `navi` / `fzf` 这种要在 shell 里注册
 函数/别名的，**不用手写任何东西** —— 在 `docs/tools.tsv` 的 `generate` 列写：
 
 ```

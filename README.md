@@ -14,7 +14,7 @@
 | 类 | 是什么 | 例子 |
 |---|---|---|
 | **A 档** | 纯二进制，装完就能敲 | `bat` / `jq` / `eza` … |
-| **hook 类** | 除了二进制，还要往 shell 里注册函数/别名 → 用 `<generate>`（**安装时**生成 shell 集成，`env.{zsh,bash}` 去 source） | `fzf` / `zoxide` / `direnv` / `atuin` / `starship` / `navi` |
+| **hook 类** | 除了二进制，还要往 shell 里注册函数/别名 → 用 `<generate>`（**安装时**生成 shell 集成，`env.{zsh,bash}` 去 source） | `fzf` / `zoxide` / `direnv` / `starship` / `navi` |
 | **B 档** | 纯二进制，但要跑起来才知道有没有用（联网 / 看文件 / 大） | `rclone` / `miller` / `lf` / `micro` / `qsv` … |
 
 ## 为什么要有这个项目
@@ -35,7 +35,7 @@ tools/musl-bins/            ← 本仓库（GitHub: allinkernel/wtool-musl-bins�
 │   ├── gen-readmes.py      ←   同上 → 生成每个工具的 readme.md + 本文件里那张工具总表
 │   ├── env-skeleton.txt    ←   env.{zsh,bash} 的模板（两份逐字等价靠它保证）
 │   └── versions.tsv        ←   实测的 `<命令> --version` 第一行（人读的佐证）
-├── bat/                    ← 一个工具 = 一个 wtool 项目（第 ⑦.3 块之后 44 个：31 + 5 hook + 8 B 档）
+├── bat/                    ← 一个工具 = 一个 wtool 项目（第 ⑦.3 块之后 43 个：31 + 4 hook + 8 B 档）
 │   ├── wtool.xml           ←   kind="muslbin" + <muslbin …> + <export_bin …>（hook 类还有 <generate>）
 │   ├── readme.md           ←   这个二进制从哪来（项目 / release 页 / tag / 资产 / sha256 / license）
 │   ├── env.zsh / env.bash  ←   两份逐字等价；本项目不往 PATH 里塞东西
@@ -170,7 +170,6 @@ tools/musl-bins/            ← 本仓库（GitHub: allinkernel/wtool-musl-bins�
 | `fzf` | `fzf` | [junegunn/fzf](https://github.com/junegunn/fzf/releases/tag/v0.74.5) | `v0.74.5` | `fzf-0.74.5-linux_amd64.tar.gz` | tar.gz (Go，静态) |
 | `zoxide` | `zoxide` | [ajeetdsouza/zoxide](https://github.com/ajeetdsouza/zoxide/releases/tag/v0.10.0) | `v0.10.0` | `zoxide-0.10.0-x86_64-unknown-linux-musl.tar.gz` | tar.gz (musl，静态) |
 | `direnv` | `direnv` | [direnv/direnv](https://github.com/direnv/direnv/releases/tag/v2.38.2) | `v2.38.2` | `direnv.linux-amd64` | tar 无（裸二进制，Go 静态） |
-| `atuin` | `atuin` | [atuinsh/atuin](https://github.com/atuinsh/atuin/releases/tag/v18.23.0) | `v18.23.0` | `atuin-x86_64-unknown-linux-musl.tar.gz` | tar.gz (musl，静态) |
 | `starship` | `starship` | [starship/starship](https://github.com/starship/starship/releases/tag/v1.26.0) | `v1.26.0` | `starship-x86_64-unknown-linux-musl.tar.gz` | tar.gz (musl，静态) |
 | `navi` | `navi` | [denisidoro/navi](https://github.com/denisidoro/navi/releases/tag/v2.24.0) | `v2.24.0` | `navi-v2.24.0-x86_64-unknown-linux-musl.tar.gz` | tar.gz (musl，静态) |
 | `rclone` | `rclone` | [rclone/rclone](https://github.com/rclone/rclone/releases/tag/v1.75.2) | `v1.75.2` | `rclone-v1.75.2-linux-amd64.zip` | zip (Go，静态) |

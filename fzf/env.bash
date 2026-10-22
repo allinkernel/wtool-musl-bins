@@ -42,3 +42,21 @@ else
     echo "       跑一次 wtool install tools/musl-bins/fzf 就有了（不用重下二进制）。" >&2
 fi
 unset WTOOL_FZF_RC
+
+# ---------------------------------------------------------------------------
+# 按键（2026-10-22 用户口径）：
+#   Up     = `previous-history` —— **原生**行为，不弹任何选择器。
+#   Ctrl-P = fzf 的历史搜索（就是 fzf.bash 里 **Ctrl-R 用的同一个函数**
+#            `__fzf_history__`）：选完**只把命令填到命令行上**
+#            （改 READLINE_LINE / READLINE_POINT），**不执行** —— 回车后还能编辑。
+#   ^R 保持 fzf 自己的绑定，本块不动。
+# 显式绑 Up 是兜底：/etc/bash.bashrc 或别的项目可能先把 Up 绑成搜索。
+# `bind` 只在交互 shell 里有意义（非交互 shell 会报 line editing not enabled）。
+# ---------------------------------------------------------------------------
+if [[ $- == *i* ]]; then
+    bind '"\e[A": previous-history' 2>/dev/null
+    bind '"\e[B": next-history' 2>/dev/null
+    if declare -F __fzf_history__ >/dev/null; then
+        bind -x '"\C-p": __fzf_history__' 2>/dev/null
+    fi
+fi

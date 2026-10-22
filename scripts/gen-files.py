@@ -8,7 +8,7 @@
 只有工具名不同，而"两份逐字等价"是硬要求。手写 = 60 份可以互相漂移的副本。
 所以：**模板在本脚本 + `scripts/env-skeleton.txt`（一处），数据在 `docs/tools.tsv`（一处）**。
 
-带 shell 集成的工具（`fzf` / `zoxide` / `direnv` / `atuin` / `starship` / `navi` 这种）
+带 shell 集成的工具（`fzf` / `zoxide` / `direnv` / `starship` / `navi` 这种）
 也走这里：表里的 `generate` 列 → `<generate>` 声明 + `env.*` 末尾那段 source 块。
 （第 ⑦.2 块 fzf 那两份 env 是手写的，于是和本脚本漂移了 —— 第 ⑦.3 块收回脚本生成。）
 
@@ -184,13 +184,57 @@ def render_xml(row):
         generate=generate, generate_comment=generate_comment)
 
 
+# 每个工具**额外**追加在 env 末尾的按键块。目前只有 fzf：
+# 它的历史搜索函数是 `fzf --bash` 生成物里的 `__fzf_history__`（^R 用的同一个），
+# 把 Ctrl-P 指过去是**用户口径**，和二进制/补全无关。写在这里而不是手改
+# `fzf/env.*`，是因为那两份是生成物 —— 手改会被 `--check` 打回。
+# 2026-10-22 用户原话："还是 zsh 不需要，给 bash 弄上就够了。"
+#   · bash：Up = 原生 `previous-history`；Ctrl-P = fzf 历史（**只填入、不执行**）
+#   · zsh ：Up = 原生 `up-line-or-history`；Ctrl-P **不绑**；^R 保持 fzf 默认
+EXTRA_ENV = {
+    ("fzf", "zsh"): """
+# ---------------------------------------------------------------------------
+# 按键（2026-10-22 用户口径）：
+#   Up  = `up-line-or-history` —— **原生**行为，不弹任何选择器。
+#   ^R  = fzf 自己的 `fzf-history-widget`（上面那份生成物绑的），**本块不动**。
+#   Ctrl-P **不绑**（用户原话："还是 zsh 不需要，给 bash 弄上就够了"）。
+# 显式绑 Up 是兜底：oh-my-zsh 之类的插件先加载时会把 Up 抢去做前缀搜索。
+# ---------------------------------------------------------------------------
+if [[ -o interactive ]]; then
+    bindkey -M emacs '^[[A' up-line-or-history 2>/dev/null
+    bindkey -M viins '^[[A' up-line-or-history 2>/dev/null
+fi
+""",
+    ("fzf", "bash"): """
+# ---------------------------------------------------------------------------
+# 按键（2026-10-22 用户口径）：
+#   Up     = `previous-history` —— **原生**行为，不弹任何选择器。
+#   Ctrl-P = fzf 的历史搜索（就是 fzf.bash 里 **Ctrl-R 用的同一个函数**
+#            `__fzf_history__`）：选完**只把命令填到命令行上**
+#            （改 READLINE_LINE / READLINE_POINT），**不执行** —— 回车后还能编辑。
+#   ^R 保持 fzf 自己的绑定，本块不动。
+# 显式绑 Up 是兜底：/etc/bash.bashrc 或别的项目可能先把 Up 绑成搜索。
+# `bind` 只在交互 shell 里有意义（非交互 shell 会报 line editing not enabled）。
+# ---------------------------------------------------------------------------
+if [[ $- == *i* ]]; then
+    bind '"\\e[A": previous-history' 2>/dev/null
+    bind '"\\e[B": next-history' 2>/dev/null
+    if declare -F __fzf_history__ >/dev/null; then
+        bind -x '"\\C-p": __fzf_history__' 2>/dev/null
+    fi
+fi
+""",
+}
+
+
 def render_env(tool, shell, other, rcfile, hook_block):
     skeleton = os.path.join(os.path.dirname(os.path.abspath(__file__)), "env-skeleton.txt")
     with open(skeleton, encoding="utf-8") as fh:
         text = fh.read()
     return (text.replace("<TOOL>", tool).replace("<SHELL>", shell)
                 .replace("<OTHER>", other).replace("<RCFILE>", rcfile)
-                .replace("<HOOK_BLOCK>", hook_block))
+                .replace("<HOOK_BLOCK>", hook_block)
+            + EXTRA_ENV.get((tool, shell), ""))
 
 
 def main():

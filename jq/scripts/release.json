@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "project": "tools/musl-bins/jq",
-  "offlineTag": "offline-2026-10-22-r2",
+  "offlineTag": "offline-2026-10-22-r3",
   "artifacts": {
     "jq-release-offline.zip": [
       {
